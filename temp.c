@@ -1,8 +1,9 @@
 #include <stdio.h>
-#include <stdarg.h>
+
 int main(void)
 {
-    // char *p = "hello";
-    printf("%d", 1 % 4);
+    int a = 2;
+    a += a -= a * a;
+    printf("%d", a);
     return 0;
 }
