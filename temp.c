@@ -2,8 +2,6 @@
 
 int main(void)
 {
-    int a = 2;
-    a += a -= a * a;
-    printf("%d", a);
+    printf("adfs\rbdfjo");
     return 0;
 }
