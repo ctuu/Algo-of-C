@@ -18,6 +18,8 @@ void Stu_Statistic(const List *plist);
 void uppercase(char *str);
 char *s_gets(char *st, int n);
 void Item_Display(const Item *item);
+bool Item_Name_Search(const Item *pi, const List *plist);
+char Modify_Menu(void);
 unsigned int Get_Int(void);
 void *Get_ID(char *st);
 
@@ -26,7 +28,7 @@ int main(void)
     List stu;
     char choice;
     InitializeList(&stu);
-    while ((choice = menu()) != '0')
+    while ((choice = Menu()) != '0')
     {
         switch (choice)
         {
@@ -118,7 +120,7 @@ void Input_Item(Item *item)
     puts("Please enter Student's English grade:");
     item->grade->Eng = Get_Int();
     puts("Please enter Student's Rating:");
-    item->Rating = Get_Int;
+    item->Rating = Get_Int();
     item->grade->Total = item->grade->C_lang + item->grade->Math + item->grade->Eng;
     item->grade->Ave = item->grade->(float)Total / 3;
 }
@@ -205,11 +207,100 @@ void Stu_Search(const List *plist)
     {
         s_gets(temp.Name, 15);
         uppercase(temp.Name);
+        if (!Item_Name_Search(&temp, plist))
+            printf("Name %s is not a member.\n", temp.Name);
     }
 }
+
+bool Item_Name_Search(const Item *pi, const List *plist)
+{
+    Node *look = *plist;
+    if (look.next == NULL)
+        return 0;
+    while (look.next != NULL)
+    {
+        if (strcmp(pi->Name, look->item.Name) != 0)
+        {
+            look = look->next;
+        }
+        else
+            Item_Display(look->item);
+    }
+    return 1;
+}
+
 void Stu_Modify(List *plist)
 {
+    if (ListIsEmpty)
+    {
+        puts("No entries!");
+        return;
+    }
+
+    Item temp;
+    Item *item;
+    Get_ID(&temp);
+    item = ListSeekItem(temp, plist);
+    char choice;
+    while ((choice = Modify_Menu()) != '0')
+    {
+        switch (choice)
+        {
+        case '1':
+            Get_ID(item->StuID);
+            break;
+        case '2':
+            puts("Please enter Student's Name:");
+            s_gets(item->Name, 15);
+            uppercase(item->Name);
+            break;
+        case '3':
+            puts("Please enter Student's C language grade:");
+            item->grade->C_lang = Get_Int();
+            break;
+        case '4':
+            puts("Please enter Student's Math grade:");
+            item->grade->Math = Get_Int();
+            break;
+        case '5':
+            puts("Please enter Student's English grade:");
+            item->grade->Eng = Get_Int();
+            break;
+        case '6':
+            puts("Please enter Student's Rating:");
+            item->Rating = Get_Int();
+            break;
+        default:
+            puts("Switching error");
+        }
+        item->grade->Total = item->grade->C_lang + item->grade->Math + item->grade->Eng;
+        item->grade->Ave = item->grade->(float)Total / 3;
+    }
 }
+
+char Modify_Menu(void)
+{
+    puts("Please choice the data you want to modify: ");
+    puts("1) ID                2) Name");
+    puts("3) C Language grade  4) Math grade");
+    puts("5) English grade     6) Rating");
+    puts("0) cancel");
+    char ch;
+    while ((ch = getchar()) != EOF)
+    {
+        while (getchar() != '\n')
+            continue;
+        ch = tolower(ch);
+        if (strchr("0123456", ch) == NULL)
+            puts("Please enter 0 ~ 6:");
+        else
+            break;
+    }
+    if (ch == EOF)
+        ch = '0';
+    return ch;
+}
+
 void Stu_Sort(List *plist)
 {
 }
@@ -221,8 +312,13 @@ void Stu_Display(const List *plist)
     if (ListIsEmpty(stu))
         puts("No entries!");
     else
-        ListTraverse(&stu, Item_Display);
+        ListTraverse(&stu, Item_Display, 0);
 }
+
+void Item_Display(const Item *item)
+{
+    printf("%10s %15s %3d %3d %3d %3d %f\n",item->StuID, item->Name, item->grade->C_lang, item->grade->Math,item->grade->Eng, item->grade->Total, item->grade->Ave);
+
 void Stu_Statistic(const List *plist)
 {
 }
