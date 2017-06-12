@@ -4,16 +4,16 @@
 
 struct Grade 
 {
-    int C;
-    int Math;
-    int Eng;
-    int Total;
+    unsigned int C_lang;
+    unsigned int Math;
+    unsigned int Eng;
+    unsigned int Total;
     float Ave;
 };
 
 typedef struct Student
 {
-    char No[10];
+    char StuID[10];
     char Name[15];
     struct Grade grade;
     int Rating;
@@ -33,7 +33,7 @@ bool ListIsEmpty(const List *plist);
 bool ListIsFull(const List *plist);
 unsigned int ListItemCount(const List *plist);
 bool ListAddItem(Item item, List *plist);
-void ListTraverse(const List *plist, void (*pfun)(Item item));
+void ListTraverse(const List *plist, void (*pfun)(Item item), bool order);
 void EmptyTheList(List *plist);
 
 bool ListDeleteItem(const Item *pi, List *plist);

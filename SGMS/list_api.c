@@ -75,14 +75,16 @@ static void CopyToNode(Item item, Node *pnode);
 {
     pnode->item = item;
 }
-void ListTraverse(const List *plist, void (*pfun)(Item item))
+void ListTraverse(const List *plist, void (*pfun)(Item item), bool order)
 {
-    Node * pnode = *plist;
-
-    while (pnode != NULL)
+    Node *pnode = *plist;
+    if (!order)
     {
-        (*pfun)(pnode->item);
-        pnode = pnode->next;
+        while (pnode != NULL)
+        {
+            (*pfun)(pnode->item);
+            pnode = pnode->next;
+        }
     }
 }
 
@@ -100,12 +102,12 @@ void EmptyTheList(List *plist)
 
 *Node ListSeekItem(const Item *pi, const List *plist)
 {
-    Node * look = *plist;
+    Node *look = *plist;
     if (look.next == NULL)
         return NULL;
     while (look.next != NULL)
     {
-        if (strcmp(pi->No, look->item.No) != 0)
+        if (strcmp(pi->StuID, look->item.StuID) != 0)
         {
             look = look->next;
         }
@@ -126,7 +128,6 @@ bool ListDeleteItem(const Item *pi, List *plist)
     free(look);
     return true;
 }
-
 
 bool ListInsertItem(Node *pnode, Item item, List *plist);
 bool ListSort(List *plist, bool (*pfun)(Item a, Item b));
