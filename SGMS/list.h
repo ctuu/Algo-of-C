@@ -25,19 +25,25 @@ typedef struct node
     Item item;
     struct node * next;
 } Node;
+//typedef Node * List;
 
-typedef Node * List;
+typedef struct list
+{
+    Node * head;
+    Node * tail;
+    int size;
+} List;
 
 void InitializeList(List *plist);
 bool ListIsEmpty(const List *plist);
 bool ListIsFull(const List *plist);
 unsigned int ListItemCount(const List *plist);
-bool ListAddItem(Item item, List *plist);
+bool ListAddItem(Item *item, List *plist);
 void ListTraverse(const List *plist, void (*pfun)(Item item), bool order);
 void EmptyTheList(List *plist);
 
 bool ListDeleteItem(const Item *pi, List *plist);
-Node *ListSeekItem(const Item *pi, const List *plist);
+Node *ListSeekID(const Item *pi, const List *plist);
 bool ListInsertItem(Node *pnode, Item item, List *plist);
 bool ListSort(List *plist, bool (*pfun)(Item a, Item b));
 

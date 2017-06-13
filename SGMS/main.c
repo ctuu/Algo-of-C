@@ -102,7 +102,7 @@ void Stu_Add(List *plist)
     {
         Input_Item(&temp);
         Node *tnode = NULL;
-        tnode = ListSeekItem(&temp, plist);
+        tnode = ListSeekID(&temp, plist);
         if (tnode != NULL)
         {
             puts("Fail to add record: ID exist.");
@@ -178,7 +178,7 @@ void Stu_Search(const List *plist)
     {
         Node *found = NULL;
         Get_ID(temp.StuID);
-        found = ListSeekItem(&temp, plist);
+        found = ListSeekID(&temp, plist);
         if (found == NULL)
             printf("ID %s is not a member.\n", temp.StuID);
         else
@@ -224,7 +224,7 @@ void Stu_Modify(List *plist)
     Item temp;
     Node *fnode;
     Get_ID(temp.StuID);
-    fnode = ListSeekItem(&temp, plist);
+    fnode = ListSeekID(&temp, plist);
     char chooce;
     while ((chooce = Modify_Menu()) != '0')
     {

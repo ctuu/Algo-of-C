@@ -3,14 +3,17 @@
 #include <stdlib.h>
 #include "list.h"
 static void CopyToNode(Item item, Node *pnode);
+static Node *MakeNode(const Item * pi);
 
 void InitializeList(List *plist)
 {
-    *plist = NULL;
+    plist->head = NULL;
+    plist->tail = NULL;
+    plist->size = 0;
 }
 bool ListIsEmpty(const List *plist)
 {
-    if (*plist == NULL)
+    if (plist->head == NULL)
         return true;
     else
         return false;
@@ -33,28 +36,27 @@ bool ListIsFull(const List *plist)
 
 unsigned int ListItemCount(const List *plist)
 {
-    unsigned int count = 0;
-    Node *pnode = *plist;
-
-    while (pnode != NULL)
-    {
-        ++count;
-        pnode = pnode->next;
-    }
-
-    return count;
+    return plist->size;
 }
 
-bool ListAddItem(Item item, List *plist)
+bool ListAddItem(Item *pi, List *plist)
 {
-    Node *pnew;
-    Node *scan = *plist;
-
-    pnew = (Node *)malloc(sizeof(Node));
-    if (pnew == NULL)
+    Node *new_node;
+    //Node *scan = *plist;
+    if (ListIsFull(*plist))
+    {
+        fprintf(stderr, "List is full\n");
         return false;
+    }
+    if (ListSeekID(pi, plist) != NULL)
+    {
+        fprintf(stderr, "Attempted to add duplicate item\n");
+        return false;
+    }
+    new_node = MakeNode(pi);
+    
 
-    CopyToNode(item, pnew);
+    
     pnew->next = NULL;
     pnew->pre = NULL;
     if (scan == NULL)
@@ -70,6 +72,20 @@ bool ListAddItem(Item item, List *plist)
     }
 
     return true;
+}
+
+static Node *MakeNode(const Item * pi)
+{
+    Node * new_node;
+
+    new_node = (Node *)malloc(sizeof(Node));
+    if (new_node != NULL)
+    {
+        CopyToNode(item, new_node);
+        new_node->pre = NULL;
+        new_node->next = NULL;
+    }
+    return new_node;
 }
 
 static void CopyToNode(Item item, Node *pnode)
@@ -101,7 +117,7 @@ void EmptyTheList(List *plist)
     }
 }
 
-Node *ListSeekItem(const Item *pi, const List *plist)
+Node *ListSeekID(const Item *pi, const List *plist)
 {
     Node *look = *plist;
     while (look != NULL)
@@ -121,7 +137,7 @@ Node *ListSeekItem(const Item *pi, const List *plist)
 bool ListDeleteItem(const Item *pi, List *plist)
 {
     Node *look = NULL;
-    look = ListSeekItem(pi, plist);
+    look = ListSeekID(pi, plist);
     if (look == NULL)
         return false;
     if (look->next != NULL)
