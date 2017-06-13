@@ -100,7 +100,7 @@ void EmptyTheList(List *plist)
     }
 }
 
-*Node ListSeekItem(const Item *pi, const List *plist)
+Node *ListSeekItem(const Item *pi, const List *plist)
 {
     Node *look = *plist;
     if (look.next == NULL)

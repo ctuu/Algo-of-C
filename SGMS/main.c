@@ -15,13 +15,10 @@ void Stu_insert(List *plist);
 void Stu_Display(const List *plist);
 void Stu_Statistic(const List *plist);
 
-void uppercase(char *str);
-char *s_gets(char *st, int n);
 void Item_Display(const Item *item);
+void Title_Display(void);
 bool Item_Name_Search(const Item *pi, const List *plist);
 char Modify_Menu(void);
-unsigned int Get_Int(void);
-void *Get_ID(char *st);
 
 int main(void)
 {
@@ -123,36 +120,6 @@ void Input_Item(Item *item)
     item->Rating = Get_Int();
     item->grade->Total = item->grade->C_lang + item->grade->Math + item->grade->Eng;
     item->grade->Ave = item->grade->(float)Total / 3;
-}
-
-void *Get_ID(char *stuid)
-{
-    bool isN = 0;
-    do
-    {
-        isN = 0;
-        puts("Please enter Student's ID:");
-        s_gets(stuid, 10);
-        for (int i = 0; (stuid)[i] != '\0'; ++i)
-            if (!isdigit((stuid)[i])
-            {
-                isN = 1;
-                printf(" is not a number.");
-                break;
-            }
-    } while (isN != 0);
-}
-
-unsigned int Get_Int(void)
-{
-    unsigned int input;
-    char ch while (scanf("%d", &temp) != 1)
-    {
-        while ((ch = getchar()) != '\n')
-            putchar(ch);
-        printf(" is not an integer.\nPlease enter an integer value: ");
-    }
-    return input;
 }
 
 void Stu_Delete(List *plist)
@@ -312,40 +279,20 @@ void Stu_Display(const List *plist)
     if (ListIsEmpty(stu))
         puts("No entries!");
     else
+    {
+        Title_Display();
         ListTraverse(&stu, Item_Display, 0);
+    }
 }
 
 void Item_Display(const Item *item)
 {
-    printf("%10s %15s %3d %3d %3d %3d %f\n",item->StuID, item->Name, item->grade->C_lang, item->grade->Math,item->grade->Eng, item->grade->Total, item->grade->Ave);
-
+    printf("%10s %15s %3d %3d %3d %3d %f\n", item->StuID, item->Name, item->grade->C_lang, item->grade->Math, item->grade->Eng, item->grade->Total, item->grade->Ave);
+}
+void Title_Display(void)
+{
+    puts("ID    Name    C Language grade    Math grade    English grade    Total grade    Average grade    Rating");
+}
 void Stu_Statistic(const List *plist)
 {
-}
-
-void uppercase(char *str)
-{
-    while (*str)
-    {
-        *str = toupper(*str);
-        str++;
-    }
-}
-
-char *s_gets(char *st, int n)
-{
-    char *ret_val;
-    char *find;
-
-    ret_val = fgets(st, n, stdin);
-    if (ret_val)
-    {
-        find = strchr(st, '\n');
-        if (find)
-            *find = '\0';
-        else
-            while (getchar() != '\n')
-                continue;
-    }
-    return ret_val;
 }

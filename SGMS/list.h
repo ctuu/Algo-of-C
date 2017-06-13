@@ -37,7 +37,13 @@ void ListTraverse(const List *plist, void (*pfun)(Item item), bool order);
 void EmptyTheList(List *plist);
 
 bool ListDeleteItem(const Item *pi, List *plist);
-*Node ListSeekItem(const Item *pi, const List *plist);
+Node *ListSeekItem(const Item *pi, const List *plist);
 bool ListInsertItem(Node *pnode, Item item, List *plist);
 bool ListSort(List *plist, bool (*pfun)(Item a, Item b));
+
+
+unsigned int Get_Int(void);
+void *Get_ID(char *st);
+void uppercase(char *str);
+char *s_gets(char *st, int n);
 #endif
