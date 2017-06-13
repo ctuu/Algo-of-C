@@ -342,7 +342,7 @@ void Stu_Sort(List *plist)
             ListSort(plist, Cmp_bRat);
             break;
         }
-        Stu_Display(plist);
+        // Stu_Display(plist);
     }
 }
 
