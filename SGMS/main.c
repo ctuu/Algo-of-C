@@ -4,7 +4,7 @@
 #include "list.h"
 
 char Menu(void);
-void Input_Item(Item *item);
+void Input_Item(Item *item, List *plist);
 
 void Stu_Add(List *plist);
 void Stu_Delete(List *plist);
@@ -100,7 +100,7 @@ void Stu_Add(List *plist)
         puts("No space in the program!");
     else
     {
-        Input_Item(&temp);
+        Input_Item(&temp, plist);
         if (ListAddItem(&temp, plist))
             puts("Successful.");
         else
@@ -108,9 +108,14 @@ void Stu_Add(List *plist)
     }
 }
 
-void Input_Item(Item *item)
+void Input_Item(Item *item, List *plist)
 {
-    Get_ID(item->StuID);
+    do
+    {
+        Get_ID(item->StuID);
+        if (InList(item, plist))
+            printf("ERROR: ID %s is exist.\n", item->StuID);
+    } while (InList(item, plist));
     puts("Please enter Student's Name:");
     s_gets(item->Name, 15);
     uppercase(item->Name);
@@ -136,7 +141,7 @@ void Stu_Delete(List *plist)
         puts("No entries!");
         return;
     }
-
+    Stu_Display(plist);
     puts("Please enter the ID of Student you wish to delete:");
     Get_ID(temp.StuID);
     printf("ID %s ", temp.StuID);
@@ -183,6 +188,7 @@ void Stu_Search(const List *plist)
     }
     else
     {
+        puts("Please enter Student's Name:");
         s_gets(temp.Name, 15);
         uppercase(temp.Name);
         if (!Item_Name_Search(&temp, plist))
@@ -194,15 +200,9 @@ bool Item_Name_Search(const Item *pi, const List *plist)
 {
     Node *look = plist->head;
     bool isDT = 0;
-    if (look->next == NULL)
-        return 0;
-    while (look->next != NULL)
+    while (look != NULL)
     {
-        if (strcmp(pi->Name, look->item.Name) != 0)
-        {
-            look = look->next;
-        }
-        else
+        if (strcmp(pi->Name, look->item.Name) == 0)
         {
             if (!isDT)
             {
@@ -211,8 +211,9 @@ bool Item_Name_Search(const Item *pi, const List *plist)
             }
             Item_Display(look->item);
         }
+        look = look->next;
     }
-    return 1;
+    return isDT;
 }
 
 void Stu_Modify(List *plist)
@@ -222,18 +223,34 @@ void Stu_Modify(List *plist)
         puts("No entries!");
         return;
     }
+    Stu_Display(plist);
 
     Item temp;
     Node *fnode;
     Get_ID(temp.StuID);
     fnode = ListSeekID(&temp, plist);
+    if (fnode == NULL)
+    {
+        printf("ERROR: ID %s is not a member.\n", temp.StuID);
+        return;
+    }
+    Title_Display();
+    Item_Display(fnode->item);
+
     char chooce;
     while ((chooce = Modify_Menu()) != '0')
     {
         switch (chooce)
         {
         case '1':
-            Get_ID(fnode->item.StuID);
+            Get_ID(temp.StuID);
+            if (!InList(&temp, plist))
+                strncpy(fnode->item.StuID, temp.StuID, 10);
+            else
+            {
+                printf("ERROR: ID %s is exist.\n", temp.StuID);
+                continue;
+            }
             break;
         case '2':
             puts("Please enter Student's Name:");
@@ -261,6 +278,8 @@ void Stu_Modify(List *plist)
         }
         fnode->item.grade.Total = fnode->item.grade.C_lang + fnode->item.grade.Math + fnode->item.grade.Eng;
         fnode->item.grade.Ave = (float)fnode->item.grade.Total / 3;
+        Title_Display();
+        Item_Display(fnode->item);
     }
 }
 
@@ -292,7 +311,30 @@ void Stu_Sort(List *plist)
 }
 void Stu_insert(List *plist)
 {
+    Stu_Display(plist);
+    if (ListIsFull(plist))
+    {
+        puts("No space in the program!");
+        return;
+    }
+
+    Item temp;
+    Node *fnode;
+    Get_ID(temp.StuID);
+    fnode = ListSeekID(&temp, plist);
+    if (fnode == NULL)
+    {
+        printf("ERROR: ID %s is not a member.\n", temp.StuID);
+        return;
+    }
+
+    Input_Item(&temp, plist);
+    if (ListInsertItem(&temp, fnode, plist))
+        puts("Insert successful.");
+    else
+        puts("Fail to insert record.");
 }
+
 void Stu_Display(const List *plist)
 {
     if (ListIsEmpty(plist))
@@ -316,4 +358,5 @@ void Item_Display(const Item item)
 }
 void Stu_Statistic(const List *plist)
 {
+    printf("size: %d\n", plist->size);
 }

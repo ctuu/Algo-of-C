@@ -42,10 +42,10 @@ bool ListAddItem(Item *item, List *plist);
 void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder);
 void EmptyTheList(List *plist);
 bool InList(const Item *pi, const List *plist);
-
 bool ListDeleteItem(const Item *pi, List *plist);
 Node *ListSeekID(const Item *pi, const List *plist);
-bool ListInsertItem(Node *pnode, Item item, List *plist);
+
+bool ListInsertItem(Item *item, Node *pnode, List *plist);
 bool ListSort(List *plist, bool (*pfun)(Item a, Item b));
 
 

@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include "list.h"
 static void CopyToNode(Item item, Node *pnode);
-static Node *MakeNode(const Item * pi);
-static void AddNode(Node * new_node, Node * head);
-static void DeleteAllNodes(Node * head);
+static Node *MakeNode(const Item *pi);
+static void AddNode(Node *new_node, Node *head);
+static void DeleteAllNodes(Node *head);
 
 void InitializeList(List *plist)
 {
@@ -64,15 +64,15 @@ bool ListAddItem(Item *pi, List *plist)
 
     if (plist->head == NULL)
         plist->head = new_node;
-    else 
+    else
         AddNode(new_node, plist->head);
     plist->tail = new_node;
     return true;
 }
 
-static Node *MakeNode(const Item * pi)
+static Node *MakeNode(const Item *pi)
 {
-    Node * new_node;
+    Node *new_node;
 
     new_node = (Node *)malloc(sizeof(Node));
     if (new_node != NULL)
@@ -89,7 +89,7 @@ static void CopyToNode(Item item, Node *pnode)
     pnode->item = item;
 }
 
-static void AddNode(Node * new_node, Node * head)
+static void AddNode(Node *new_node, Node *head)
 {
     while (head->next != NULL)
         head = head->next;
@@ -100,7 +100,7 @@ static void AddNode(Node * new_node, Node * head)
 
 bool InList(const Item *pi, const List *plist)
 {
-    return (ListSeekID(pi, plist) == NULL) ? false: true;
+    return (ListSeekID(pi, plist) == NULL) ? false : true;
 }
 
 bool ListDeleteItem(const Item *pi, List *plist)
@@ -126,7 +126,7 @@ bool ListDeleteItem(const Item *pi, List *plist)
             plist->tail = look->pre;
         else
             plist->tail = NULL;
-    }   
+    }
     else
         look->next->pre = look->pre;
 
@@ -159,7 +159,7 @@ void EmptyTheList(List *plist)
     plist->tail = NULL;
     plist->size = 0;
 }
-static void DeleteAllNodes(Node * head)
+static void DeleteAllNodes(Node *head)
 {
     Node *psave;
     while (head != NULL)
@@ -187,7 +187,41 @@ Node *ListSeekID(const Item *pi, const List *plist)
     return look;
 }
 
+bool ListInsertItem(Item *pi, Node *pnode, List *plist)
+{
+    Node *new_node;
+    if (ListIsFull(plist))
+    {
+        fprintf(stderr, "List is full\n");
+        return false;
+    }
+    if (ListSeekID(pi, plist) != NULL)
+    {
+        fprintf(stderr, "Attempted to add duplicate item\n");
+        return false;
+    }
+    new_node = MakeNode(pi);
+    if (new_node == NULL)
+    {
+        fprintf(stderr, "Couldn't create node\n");
+        return false;
+    }
+    if (!InList(&pnode->item, plist))
+    {
+        fprintf(stderr, "Node is not exist.\n");
+        return false;
+    }
 
-
-bool ListInsertItem(Node *pnode, Item item, List *plist);
+    plist->size++;
+    new_node->pre = pnode->pre;
+    new_node->next = pnode;
+    if (pnode->pre == NULL)
+    {
+        plist->head = new_node;
+    }
+    else
+        pnode ->pre->next = new_node;
+    pnode ->pre = new_node;
+    return true;
+}
 bool ListSort(List *plist, bool (*pfun)(Item a, Item b));
