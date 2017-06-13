@@ -7,9 +7,9 @@ static Node *MakeNode(const Item *pi);
 static void swapNode(Node *pn_i, Node *pn_j, List *plist);
 static void AddNode(Node *new_node, Node *head);
 static void DeleteAllNodes(Node *head);
-static Node *NodeGetPre(const Node *pnode);
-static Node *NodeGetNext(const Node *pnode);
-static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(Item *a, Item *b));
+static Node *NodeGetPre(Node *pnode);
+static Node *NodeGetNext(Node *pnode);
+static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b));
 
 void InitializeList(List *plist)
 {
@@ -228,11 +228,11 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
     pnode->pre = new_node;
     return true;
 }
-void ListSort(List *plist, bool (*cmp)(Item *a, Item *b))
+void ListSort(List *plist, bool (*cmp)(const Item *a,const Item *b))
 {
-    QuickSort(0, plist->size - 1, plist->head, plist->tail, (*cmp));
+    QuickSort(0, plist->size - 1, plist->head, plist->tail, plist, (*cmp));
 }
-static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(Item *a, Item *b))
+static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b))
 {
     int a = i;
     int b = j - 1;
@@ -273,17 +273,17 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
     }
 }
 
-static Node *NodeGetPre(const Node *pnode)
+static Node *NodeGetPre(Node *pnode)
 {
-    if (pnode == NULL)
-        return NULL;
+    if (pnode->pre == NULL)
+        return pnode;
     else
         return pnode->pre;
 }
-static Node *NodeGetNext(const Node *pnode)
+static Node *NodeGetNext(Node *pnode)
 {
-    if (pnode == NULL)
-        return NULL;
+    if (pnode->next == NULL)
+        return pnode;
     else
         return pnode->next;
 }

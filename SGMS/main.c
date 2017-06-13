@@ -320,14 +320,35 @@ void Stu_Sort(List *plist)
     {
         switch (chooce)
         {
-            case '1'
-            ;
+        case '1':
+            ListSort(plist, Cmp_bID);
             break;
+        case '2':
+            ListSort(plist, Cmp_bName);
+            break;
+        case '3':
+            ListSort(plist, Cmp_bCG);
+            break;
+        case '4':
+            ListSort(plist, Cmp_bMG);
+            break;
+        case '5':
+            ListSort(plist, Cmp_bEG);
+            break;
+        case '6':
+            ListSort(plist, Cmp_bTG);
+            break;
+        case '7':
+            ListSort(plist, Cmp_bRat);
+            break;
+        }
+        Stu_Display(plist);
+    }
 }
 
 char Sort_Menu(void)
 {
-     puts("Please chooce the Sorting criteria: ");
+    puts("Please chooce the Sorting criteria: ");
     puts("1) ID                2) Name");
     puts("3) C Language grade  4) Math grade");
     puts("5) English grade     6) Average/Total grade");

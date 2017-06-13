@@ -46,7 +46,7 @@ bool InList(const Item *pi, const List *plist);
 bool ListDeleteItem(const Item *pi, List *plist);
 Node *ListSeekID(const Item *pi, const List *plist);
 bool ListInsertItem(Item *item, Node *pnode, List *plist);
-void ListSort(int i, int j, Node *pn_1, Node *pn_2, List *plist, bool (*cmp)(Item *a, Item *b));
+void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b));
 
 
 //get_data.c
