@@ -21,8 +21,8 @@ typedef struct Student
 
 typedef struct node
 {
-    struct node * pre;
     Item item;
+    struct node * pre;
     struct node * next;
 } Node;
 //typedef Node * List;
@@ -39,8 +39,9 @@ bool ListIsEmpty(const List *plist);
 bool ListIsFull(const List *plist);
 unsigned int ListItemCount(const List *plist);
 bool ListAddItem(Item *item, List *plist);
-void ListTraverse(const List *plist, void (*pfun)(Item item), bool order);
+void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder);
 void EmptyTheList(List *plist);
+bool InList(const Item *pi, const List *plist);
 
 bool ListDeleteItem(const Item *pi, List *plist);
 Node *ListSeekID(const Item *pi, const List *plist);

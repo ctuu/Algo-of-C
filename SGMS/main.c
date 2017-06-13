@@ -95,20 +95,13 @@ char Menu(void)
 void Stu_Add(List *plist)
 {
     Item temp;
-    
+
     if (ListIsFull(plist))
         puts("No space in the program!");
     else
     {
         Input_Item(&temp);
-        Node *tnode = NULL;
-        tnode = ListSeekID(&temp, plist);
-        if (tnode != NULL)
-        {
-            puts("Fail to add record: ID exist.");
-            return;
-        }
-        if (ListAddItem(temp, plist))
+        if (ListAddItem(&temp, plist))
             puts("Successful.");
         else
             puts("Fail to add record.");
@@ -132,7 +125,7 @@ void Input_Item(Item *item)
     item->grade.Total = item->grade.C_lang + item->grade.Math + item->grade.Eng;
     item->grade.Ave = (float)item->grade.Total / 3;
     while (getchar() != '\n')
-            continue;
+        continue;
 }
 
 void Stu_Delete(List *plist)
@@ -161,6 +154,7 @@ void Stu_Search(const List *plist)
         puts("No entries!");
         return;
     }
+
     puts("Please chooce the way of search: ");
     puts("1) ID           2) Name");
     char ch;
@@ -198,7 +192,8 @@ void Stu_Search(const List *plist)
 
 bool Item_Name_Search(const Item *pi, const List *plist)
 {
-    Node *look = *plist;
+    Node *look = plist->head;
+    bool isDT = 0;
     if (look->next == NULL)
         return 0;
     while (look->next != NULL)
@@ -208,7 +203,14 @@ bool Item_Name_Search(const Item *pi, const List *plist)
             look = look->next;
         }
         else
+        {
+            if (!isDT)
+            {
+                Title_Display();
+                isDT = 1;
+            }
             Item_Display(look->item);
+        }
     }
     return 1;
 }
