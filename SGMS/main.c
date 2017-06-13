@@ -15,7 +15,7 @@ void Stu_insert(List *plist);
 void Stu_Display(const List *plist);
 void Stu_Statistic(const List *plist);
 
-void Item_Display(const Item *item);
+void Item_Display(const Item item);
 void Title_Display(void);
 bool Item_Name_Search(const Item *pi, const List *plist);
 char Modify_Menu(void);
@@ -56,8 +56,11 @@ int main(void)
         default:
             puts("Switching error");
         }
+        puts("To continue, please press ENTER.");
+        while (getchar() != '\n')
+            continue;
     }
-    EmptyTheList(stu);
+    EmptyTheList(&stu);
     puts("Bye.");
     return 0;
 }
@@ -92,11 +95,11 @@ char Menu(void)
 void Stu_Add(List *plist)
 {
     Item temp;
-    if (ListIsFull(plist)
+    if (ListIsFull(plist))
         puts("No space in the program!");
     else
     {
-        input(&temp);
+        Input_Item(&temp);
         if (ListAddItem(temp, plist))
             puts("Successful.");
         else
@@ -111,15 +114,17 @@ void Input_Item(Item *item)
     s_gets(item->Name, 15);
     uppercase(item->Name);
     puts("Please enter Student's C language grade:");
-    item->grade->C_lang = Get_Int();
+    item->grade.C_lang = Get_Int();
     puts("Please enter Student's Math grade:");
-    item->grade->Math = Get_Int();
+    item->grade.Math = Get_Int();
     puts("Please enter Student's English grade:");
-    item->grade->Eng = Get_Int();
+    item->grade.Eng = Get_Int();
     puts("Please enter Student's Rating:");
     item->Rating = Get_Int();
-    item->grade->Total = item->grade->C_lang + item->grade->Math + item->grade->Eng;
-    item->grade->Ave = item->grade->(float)Total / 3;
+    item->grade.Total = item->grade.C_lang + item->grade.Math + item->grade.Eng;
+    item->grade.Ave = (float)item->grade.Total / 3;
+    while (getchar() != '\n')
+            continue;
 }
 
 void Stu_Delete(List *plist)
@@ -134,15 +139,16 @@ void Stu_Delete(List *plist)
     puts("Please enter the ID of Student you wish to delete:");
     Get_ID(temp.StuID);
     printf("ID %s ", temp.StuID);
-    if (ListDeleteItem(&temp, plist)
+    if (ListDeleteItem(&temp, plist))
         printf("is dropped from the System.\n");
     else
         printf("is not a member.\n");
 }
+
 void Stu_Search(const List *plist)
 {
     Item temp;
-    if (ListIsEmpty)
+    if (ListIsEmpty(plist))
     {
         puts("No entries!");
         return;
@@ -182,9 +188,9 @@ void Stu_Search(const List *plist)
 bool Item_Name_Search(const Item *pi, const List *plist)
 {
     Node *look = *plist;
-    if (look.next == NULL)
+    if (look->next == NULL)
         return 0;
-    while (look.next != NULL)
+    while (look->next != NULL)
     {
         if (strcmp(pi->Name, look->item.Name) != 0)
         {
@@ -198,50 +204,50 @@ bool Item_Name_Search(const Item *pi, const List *plist)
 
 void Stu_Modify(List *plist)
 {
-    if (ListIsEmpty)
+    if (ListIsEmpty(plist))
     {
         puts("No entries!");
         return;
     }
 
     Item temp;
-    Item *item;
-    Get_ID(&temp);
-    item = ListSeekItem(temp, plist);
+    Node *fnode;
+    Get_ID(temp.StuID);
+    fnode = ListSeekItem(&temp, plist);
     char choice;
     while ((choice = Modify_Menu()) != '0')
     {
         switch (choice)
         {
         case '1':
-            Get_ID(item->StuID);
+            Get_ID(fnode->item.StuID);
             break;
         case '2':
             puts("Please enter Student's Name:");
-            s_gets(item->Name, 15);
-            uppercase(item->Name);
+            s_gets(fnode->item.Name, 15);
+            uppercase(fnode->item.Name);
             break;
         case '3':
             puts("Please enter Student's C language grade:");
-            item->grade->C_lang = Get_Int();
+            fnode->item.grade.C_lang = Get_Int();
             break;
         case '4':
             puts("Please enter Student's Math grade:");
-            item->grade->Math = Get_Int();
+            fnode->item.grade.Math = Get_Int();
             break;
         case '5':
             puts("Please enter Student's English grade:");
-            item->grade->Eng = Get_Int();
+            fnode->item.grade.Eng = Get_Int();
             break;
         case '6':
             puts("Please enter Student's Rating:");
-            item->Rating = Get_Int();
+            fnode->item.Rating = Get_Int();
             break;
         default:
             puts("Switching error");
         }
-        item->grade->Total = item->grade->C_lang + item->grade->Math + item->grade->Eng;
-        item->grade->Ave = item->grade->(float)Total / 3;
+        fnode->item.grade.Total = fnode->item.grade.C_lang + fnode->item.grade.Math + fnode->item.grade.Eng;
+        fnode->item.grade.Ave = (float)fnode->item.grade.Total / 3;
     }
 }
 
@@ -276,22 +282,22 @@ void Stu_insert(List *plist)
 }
 void Stu_Display(const List *plist)
 {
-    if (ListIsEmpty(stu))
+    if (ListIsEmpty(plist))
         puts("No entries!");
     else
     {
         Title_Display();
-        ListTraverse(&stu, Item_Display, 0);
+        ListTraverse(plist, Item_Display, 0);
     }
 }
 
-void Item_Display(const Item *item)
+void Item_Display(const Item item)
 {
-    printf("%10s %15s %3d %3d %3d %3d %f\n", item->StuID, item->Name, item->grade->C_lang, item->grade->Math, item->grade->Eng, item->grade->Total, item->grade->Ave);
+    printf(" %-10s  %-15s  %3d  %3d  %3d  %3d  %5.2f\n", item.StuID, item.Name, item.grade.C_lang, item.grade.Math, item.grade.Eng, item.grade.Total, item.grade.Ave);
 }
 void Title_Display(void)
 {
-    puts("ID    Name    C Language grade    Math grade    English grade    Total grade    Average grade    Rating");
+    puts("|ID         |Name            |C Language grade    Math grade    English grade    Total grade    Average grade    Rating");
 }
 void Stu_Statistic(const List *plist)
 {

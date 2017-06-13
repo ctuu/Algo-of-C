@@ -43,7 +43,7 @@ bool ListSort(List *plist, bool (*pfun)(Item a, Item b));
 
 
 unsigned int Get_Int(void);
-void *Get_ID(char *st);
+void Get_ID(char *st);
 void uppercase(char *str);
 char *s_gets(char *st, int n);
 #endif

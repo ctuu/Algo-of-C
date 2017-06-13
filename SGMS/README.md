@@ -31,3 +31,5 @@
         int mingci;     	/*名次*/
     };
     ```
+ID    Name    C Language grade    Math grade    English grade    Total grade    Average grade    Rating
+        44             QWE  78  99  80 257 85.666664

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include "list.h"
 static void CopyToNode(Item item, Node *pnode);
@@ -71,7 +72,7 @@ bool ListAddItem(Item item, List *plist)
     return true;
 }
 
-static void CopyToNode(Item item, Node *pnode);
+static void CopyToNode(Item item, Node *pnode)
 {
     pnode->item = item;
 }
@@ -103,9 +104,9 @@ void EmptyTheList(List *plist)
 Node *ListSeekItem(const Item *pi, const List *plist)
 {
     Node *look = *plist;
-    if (look.next == NULL)
+    if (look->next == NULL)
         return NULL;
-    while (look.next != NULL)
+    while (look->next != NULL)
     {
         if (strcmp(pi->StuID, look->item.StuID) != 0)
         {

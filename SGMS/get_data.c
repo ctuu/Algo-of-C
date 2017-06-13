@@ -11,7 +11,7 @@ void uppercase(char *str)
         str++;
     }
 }
-void *Get_ID(char *stuid)
+void Get_ID(char *stuid)
 {
     bool isN = 0;
     do
@@ -29,6 +29,7 @@ void *Get_ID(char *stuid)
             }
         }
     } while (isN != 0);
+    return;
 }
 
 unsigned int Get_Int(void)
