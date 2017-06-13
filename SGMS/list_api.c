@@ -104,28 +104,34 @@ void EmptyTheList(List *plist)
 Node *ListSeekItem(const Item *pi, const List *plist)
 {
     Node *look = *plist;
-    if (look->next == NULL)
-        return NULL;
-    while (look->next != NULL)
+    while (look != NULL)
     {
         if (strcmp(pi->StuID, look->item.StuID) != 0)
         {
             look = look->next;
         }
         else
+        {
             break;
+        }
     }
     return look;
 }
 
 bool ListDeleteItem(const Item *pi, List *plist)
 {
-    Node *look;
+    Node *look = NULL;
     look = ListSeekItem(pi, plist);
     if (look == NULL)
         return false;
-    look->pre->next = look->next;
-    look->next->pre = look->pre;
+    if (look->next != NULL)
+    {
+        look->pre->next = look->next;
+        look->next->pre = look->pre;
+    }
+    else if (look->pre != NULL)
+        look->pre->next = NULL;
+    
     free(look);
     return true;
 }

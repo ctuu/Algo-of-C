@@ -23,11 +23,11 @@ char Modify_Menu(void);
 int main(void)
 {
     List stu;
-    char choice;
+    char chooce;
     InitializeList(&stu);
-    while ((choice = Menu()) != '0')
+    while ((chooce = Menu()) != '0')
     {
-        switch (choice)
+        switch (chooce)
         {
         case '1':
             Stu_Add(&stu);
@@ -56,7 +56,7 @@ int main(void)
         default:
             puts("Switching error");
         }
-        puts("To continue, please press ENTER.");
+        printf("press ENTER to continue... ");
         while (getchar() != '\n')
             continue;
     }
@@ -71,10 +71,10 @@ char Menu(void)
 
     puts("The Students' Grade Management System");
     puts("Enter the letter correspinding to your choice:");
-    puts("1) add     record        2) delete record");
-    puts("3) search  record        4) modify record");
-    puts("5) sort    record        6) insert record");
-    puts("7) display record        8) statistics");
+    puts("1) add     record             2) delete record");
+    puts("3) search  record             4) modify record");
+    puts("5) sort    record             6) insert record");
+    puts("7) display record             8) statistics");
     puts("0) quit");
     while ((ch = getchar()) != EOF)
     {
@@ -95,15 +95,23 @@ char Menu(void)
 void Stu_Add(List *plist)
 {
     Item temp;
+    
     if (ListIsFull(plist))
         puts("No space in the program!");
     else
     {
         Input_Item(&temp);
+        Node *tnode = NULL;
+        tnode = ListSeekItem(&temp, plist);
+        if (tnode != NULL)
+        {
+            puts("Fail to add record: ID exist.");
+            return;
+        }
         if (ListAddItem(temp, plist))
             puts("Successful.");
         else
-            puts("Fail to add record");
+            puts("Fail to add record.");
     }
 }
 
@@ -153,7 +161,7 @@ void Stu_Search(const List *plist)
         puts("No entries!");
         return;
     }
-    puts("Please choice the way of search: ");
+    puts("Please chooce the way of search: ");
     puts("1) ID           2) Name");
     char ch;
     while ((ch = getchar()) != EOF)
@@ -174,7 +182,10 @@ void Stu_Search(const List *plist)
         if (found == NULL)
             printf("ID %s is not a member.\n", temp.StuID);
         else
+        {
+            Title_Display();
             Item_Display(found->item);
+        }
     }
     else
     {
@@ -214,10 +225,10 @@ void Stu_Modify(List *plist)
     Node *fnode;
     Get_ID(temp.StuID);
     fnode = ListSeekItem(&temp, plist);
-    char choice;
-    while ((choice = Modify_Menu()) != '0')
+    char chooce;
+    while ((chooce = Modify_Menu()) != '0')
     {
-        switch (choice)
+        switch (chooce)
         {
         case '1':
             Get_ID(fnode->item.StuID);
@@ -253,7 +264,7 @@ void Stu_Modify(List *plist)
 
 char Modify_Menu(void)
 {
-    puts("Please choice the data you want to modify: ");
+    puts("Please chooce the data you want to modify: ");
     puts("1) ID                2) Name");
     puts("3) C Language grade  4) Math grade");
     puts("5) English grade     6) Rating");
@@ -291,13 +302,15 @@ void Stu_Display(const List *plist)
     }
 }
 
-void Item_Display(const Item item)
-{
-    printf(" %-10s  %-15s  %3d  %3d  %3d  %3d  %5.2f\n", item.StuID, item.Name, item.grade.C_lang, item.grade.Math, item.grade.Eng, item.grade.Total, item.grade.Ave);
-}
 void Title_Display(void)
 {
-    puts("|ID         |Name            |C Language grade    Math grade    English grade    Total grade    Average grade    Rating");
+    puts("|ID         |Name            |C Language Grade  |Math Grade  |English Grade  |Total Grade  |Average Grade  |Rating");
+}
+void Item_Display(const Item item)
+{
+    printf(" %-10s  %-15s", item.StuID, item.Name);
+    printf("  %-3d                %-3d          %-3d             %-3d           %-5.2f", item.grade.C_lang, item.grade.Math, item.grade.Eng, item.grade.Total, item.grade.Ave);
+    printf("           %-4d\n", item.Rating);
 }
 void Stu_Statistic(const List *plist)
 {
