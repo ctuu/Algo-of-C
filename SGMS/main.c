@@ -342,7 +342,7 @@ void Stu_Sort(List *plist)
             ListSort(plist, Cmp_bRat);
             break;
         }
-        // Stu_Display(plist);
+         Stu_Display(plist);
     }
 }
 
@@ -397,6 +397,7 @@ void Stu_insert(List *plist)
 
 void Stu_Display(const List *plist)
 {
+    int i = 5;
     if (ListIsEmpty(plist))
         puts("No entries!");
     else
