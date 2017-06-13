@@ -9,7 +9,8 @@ static void AddNode(Node *new_node, Node *head);
 static void DeleteAllNodes(Node *head);
 static Node *NodeGetPre(Node *pnode);
 static Node *NodeGetNext(Node *pnode);
-static Node *partion(Node *head, Node *low, Node *high, bool (*cmp)(const Item *a, const Item *b));
+static Node *partion(Node *phead, Node *plow, Node *phigh, List *plist, bool (*cmp)(const Item *a, const Item *b));
+void QuickSort(Node *phead, Node *plow, Node *phigh, List *plist, bool (*cmp)(const Item *a, const Item *b));
 void InitializeList(List *plist)
 {
     plist->head = NULL;
@@ -227,51 +228,36 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
     pnode->pre = new_node;
     return true;
 }
-void ListSort(List *plist, bool (*cmp)(const Item *a,const Item *b))
+void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b))
 {
-    //QuickSort(0, plist->size - 1, plist->head, plist->tail, plist, (*cmp));
+    QuickSort(plist->head, plist->head->next, plist->tail, plist, (*cmp));
 }
-
-static Node *partion(Node *head, Node *low, Node *high, bool (*cmp)(const Item *a, const Item *b))
-// {
-//     int a = i;
-//     int b = j - 1;
-//     Node *pn_a = pn_i;
-//     Node *pn_b = NodeGetPre(pn_j);
-//     if (a < b)
-//     {
-//         while (a < b)
-//         {
-//             while (!(*cmp)(&pn_a->item, &pn_j->item) && a < b)
-//             {
-//                 a++;
-//                 pn_a = NodeGetNext(pn_a);
-//             }
-//             while ((*cmp)(&pn_b->item, &pn_j->item) && a < b)
-//             {
-//                 b--;
-//                 pn_b = NodeGetPre(pn_b);
-//             }
-//             if ((*cmp)(&pn_a->item, &pn_j->item) &&(*cmp)(&pn_b->item, &pn_j->item))
-//             {
-//                 swapNode(pn_a, pn_b, plist);
-//             }
-//         }
-//         if ((*cmp)(&pn_a->item, &pn_j->item))
-//         {
-//             swapNode(pn_a, pn_j, plist);
-//         }
-//         QuickSort(i, a, pn_i, pn_a, plist, (*cmp));
-//         QuickSort(b, j, pn_b, pn_j, plist, (*cmp));
-//     }
-//     else if (a == b)
-//     {
-//         if ((*cmp)(&pn_i->item, &pn_j->item))
-//         {
-//             swapNode(pn_i, pn_j, plist);
-//         }
-//     }
-// }
+void QuickSort(Node *phead, Node *plow, Node *phigh, List *plist, bool (*cmp)(const Item *a, const Item *b))
+{
+    Node *ptemp = NULL;
+    ptemp = partion(phead, plow, phigh, plist, (*cmp));
+    if (plow != ptemp)
+        QuickSort(phead, plow, phigh->pre, plist, (*cmp));
+    if (phigh != ptemp)
+        QuickSort(phead, plow->next, phigh, plist, (*cmp));
+}
+static Node *partion(Node *phead, Node *plow, Node *phigh, List *plist, bool (*cmp)(const Item *a, const Item *b))
+{
+    Item piovt;
+    if (!phead->next)
+        return phead->next;
+    piovt = plow->item;
+    while (plow != phigh)
+    {
+        while (plow != phigh && (*cmp)(&phigh->item, &piovt))
+            phigh = phigh->pre;
+        swapNode(phigh, plow, plist);
+        while (plow != phigh && !(*cmp)(&plow->item, &piovt))
+            plow = plow->next;
+        swapNode(phigh, plow, plist);
+    }
+    return plow;
+}
 
 static Node *NodeGetPre(Node *pnode)
 {

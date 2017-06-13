@@ -397,7 +397,6 @@ void Stu_insert(List *plist)
 
 void Stu_Display(const List *plist)
 {
-    int i = 5;
     if (ListIsEmpty(plist))
         puts("No entries!");
     else
