@@ -227,44 +227,41 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
     pnode->pre = new_node;
     return true;
 }
-bool ListSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(Item *a, Item *b))
+void ListSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(Item *i_a, Item *i_b))
 {
-    //void quicksort(int i, int j)
     int a = i;
     int b = j - 1;
-    int temp;
     Node *pn_a = pn_i;
     Node *pn_b = NodeGetPre(pn_j);
-    Node *temp;
     if (a < b)
     {
         while (a < b)
         {
-            while (!(*cmp)(pn_a, pn_j) && a < b)
+            while (!(*cmp)(&pn_a->item, &pn_j->item) && a < b)
             {
                 a++;
                 NodeGetNext(pn_a);
             }
-            while ((*cmp)(pn_b, pn_j) && a < b)
+            while ((*cmp)(&pn_b->item, &pn_j->item) && a < b)
             {
                 b--;
                 NodeGetPre(pn_b);
             }
-            if ((*cmp)(pn_a, pn_j) &&(*cmp)(pn_b, pn_j))
+            if ((*cmp)(&pn_a->item, &pn_j->item) &&(*cmp)(&pn_b->item, &pn_j->item))
             {
                 swapNode(pn_a, pn_b, plist);
             }
         }
-        if ((*cmp)(pn_a, pn_j))
+        if ((*cmp)(&pn_a->item, &pn_j->item))
         {
             swapNode(pn_a, pn_j, plist);
         }
-        ListSort(i, a, pn_i, pn_a, plist);
-        ListSort(b, j, pn_b, pn_j, plist);
+        ListSort(i, a, pn_i, pn_a, plist, (*cmp));
+        ListSort(b, j, pn_b, pn_j, plist, (*cmp));
     }
     else if (a == b)
     {
-        if ((*cmp)(pn_i, pn_j))
+        if ((*cmp)(&pn_i->item, &pn_j->item))
         {
             swapNode(pn_i, pn_j, plist);
         }
@@ -320,7 +317,7 @@ static void swapNode(Node *pn_i, Node *pn_j, List *plist)
     else
         temp.pre->next = pn_i;
 
-    if (temp.> next == NULL)
+    if (temp.next == NULL)
     {
         plist->tail = pn_i;
         pn_i->next = NULL;
