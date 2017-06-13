@@ -46,7 +46,7 @@ bool ListDeleteItem(const Item *pi, List *plist);
 Node *ListSeekID(const Item *pi, const List *plist);
 
 bool ListInsertItem(Item *item, Node *pnode, List *plist);
-bool ListSort(List *plist, bool (*pfun)(Item a, Item b));
+bool ListSort(int i, int j, Node *pn_1, Node *pn_2, List *plist, bool (*cmp)(Item *a, Item *b));
 
 
 unsigned int Get_Int(void);

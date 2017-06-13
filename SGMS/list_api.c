@@ -4,8 +4,11 @@
 #include "list.h"
 static void CopyToNode(Item item, Node *pnode);
 static Node *MakeNode(const Item *pi);
+static void swapNode(Node *pn_i, Node *pn_j, List *plist);
 static void AddNode(Node *new_node, Node *head);
 static void DeleteAllNodes(Node *head);
+static Node *NodeGetPre(const Node *pnode);
+static Node *NodeGetNext(const Node *pnode);
 
 void InitializeList(List *plist)
 {
@@ -220,8 +223,108 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
         plist->head = new_node;
     }
     else
-        pnode ->pre->next = new_node;
-    pnode ->pre = new_node;
+        pnode->pre->next = new_node;
+    pnode->pre = new_node;
     return true;
 }
-bool ListSort(List *plist, bool (*pfun)(Item a, Item b));
+bool ListSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(Item *a, Item *b))
+{
+    //void quicksort(int i, int j)
+    int a = i;
+    int b = j - 1;
+    int temp;
+    Node *pn_a = pn_i;
+    Node *pn_b = NodeGetPre(pn_j);
+    Node *temp;
+    if (a < b)
+    {
+        while (a < b)
+        {
+            while (!(*cmp)(pn_a, pn_j) && a < b)
+            {
+                a++;
+                NodeGetNext(pn_a);
+            }
+            while ((*cmp)(pn_b, pn_j) && a < b)
+            {
+                b--;
+                NodeGetPre(pn_b);
+            }
+            if ((*cmp)(pn_a, pn_j) &&(*cmp)(pn_b, pn_j))
+            {
+                swapNode(pn_a, pn_b, plist);
+            }
+        }
+        if ((*cmp)(pn_a, pn_j))
+        {
+            swapNode(pn_a, pn_j, plist);
+        }
+        ListSort(i, a, pn_i, pn_a, plist);
+        ListSort(b, j, pn_b, pn_j, plist);
+    }
+    else if (a == b)
+    {
+        if ((*cmp)(pn_i, pn_j))
+        {
+            swapNode(pn_i, pn_j, plist);
+        }
+    }
+}
+
+static Node *NodeGetPre(const Node *pnode)
+{
+    if (pnode == NULL)
+        return NULL;
+    else
+        return pnode->pre;
+}
+static Node *NodeGetNext(const Node *pnode)
+{
+    if (pnode == NULL)
+        return NULL;
+    else
+        return pnode->next;
+}
+
+static void swapNode(Node *pn_i, Node *pn_j, List *plist)
+{
+    Node temp;
+    temp.pre = pn_j->pre;
+    temp.next = pn_j->next;
+
+    pn_j->pre = pn_i->pre;
+    pn_j->next = pn_i->next;
+    if (pn_i->pre == NULL)
+    {
+        plist->head = pn_j;
+        pn_j->pre = NULL;
+    }
+    else
+        pn_i->pre->next = pn_j;
+
+    if (pn_i->next == NULL)
+    {
+        plist->tail = pn_j;
+        pn_j->next = NULL;
+    }
+    else
+        pn_i->next->pre = pn_j;
+
+    pn_i->pre = temp.pre;
+    pn_i->next = temp.next;
+    if (temp.pre == NULL)
+    {
+        plist->head = pn_i;
+        pn_i->pre = NULL;
+    }
+    else
+        temp.pre->next = pn_i;
+
+    if (temp.> next == NULL)
+    {
+        plist->tail = pn_i;
+        pn_i->next = NULL;
+    }
+    else
+        temp.next->pre = pn_i;
+}
