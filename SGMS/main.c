@@ -3,7 +3,6 @@
 #include <ctype.h>
 #include "list.h"
 
-char Menu(void);
 void Input_Item(Item *item, List *plist);
 
 void Stu_Add(List *plist);
@@ -18,7 +17,10 @@ void Stu_Statistic(const List *plist);
 void Item_Display(const Item item);
 void Title_Display(void);
 bool Item_Name_Search(const Item *pi, const List *plist);
+
+char Menu(void);
 char Modify_Menu(void);
+char Sort_Menu(void);
 
 int main(void)
 {
@@ -82,7 +84,7 @@ char Menu(void)
             continue;
         ch = tolower(ch);
         if (strchr("123456780", ch) == NULL)
-            puts("Please enter 0 ~ 8:");
+            puts("Please enter 1 ~ 8 or 0:");
         else
             break;
     }
@@ -297,7 +299,7 @@ char Modify_Menu(void)
             continue;
         ch = tolower(ch);
         if (strchr("0123456", ch) == NULL)
-            puts("Please enter 0 ~ 6:");
+            puts("Please enter 1 ~ 6 or 0:");
         else
             break;
     }
@@ -308,7 +310,44 @@ char Modify_Menu(void)
 
 void Stu_Sort(List *plist)
 {
+    if (ListIsEmpty(plist))
+    {
+        puts("No entries!");
+        return;
+    }
+    char chooce;
+    while ((chooce = Modify_Menu()) != '0')
+    {
+        switch (chooce)
+        {
+            case '1'
+            ;
+            break;
 }
+
+char Sort_Menu(void)
+{
+     puts("Please chooce the Sorting criteria: ");
+    puts("1) ID                2) Name");
+    puts("3) C Language grade  4) Math grade");
+    puts("5) English grade     6) Average/Total grade");
+    puts("7) Rating            0) cancel");
+    char ch;
+    while ((ch = getchar()) != EOF)
+    {
+        while (getchar() != '\n')
+            continue;
+        ch = tolower(ch);
+        if (strchr("01234567", ch) == NULL)
+            puts("Please enter 1 ~ 7 or 0:");
+        else
+            break;
+    }
+    if (ch == EOF)
+        ch = '0';
+    return ch;
+}
+
 void Stu_insert(List *plist)
 {
     Stu_Display(plist);
