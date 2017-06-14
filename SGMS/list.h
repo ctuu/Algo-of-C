@@ -2,18 +2,22 @@
 #ifndef LIST_H_
 #define LISH_H_
 #include <stdbool.h>
+
+#define LEN_ID 10
+#define LEN_NAME 15
+#define LEN_NUM 4
 struct Grade 
 {
-    unsigned int C_lang;
-    unsigned int Math;
-    unsigned int Eng;
-    unsigned int Total;
+    int C_lang;
+    int Math;
+    int Eng;
+    int Total;
     float Ave;
 };
 
 typedef struct Student
 {
-    char StuID[10];
+    char StuID[LEN_ID];
     char Name[15];
     struct Grade grade;
     int Rating;
@@ -51,8 +55,8 @@ void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b));
 
 
 //get_data.c
-unsigned int Get_Int(void);
-void Get_ID(char *st);
+bool Get_Int(int *num);
+bool Get_ID(char *st);
 void uppercase(char *str);
 char *s_gets(char *st, int n);
 

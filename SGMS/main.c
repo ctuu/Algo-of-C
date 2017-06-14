@@ -3,9 +3,7 @@
 #include <ctype.h>
 #include "list.h"
 
-void Input_Item(Item *item, List *plist);
-
-void Stu_Add(List *plist);
+bool Stu_Add(List *plist);
 void Stu_Delete(List *plist);
 void Stu_Search(const List *plist);
 void Stu_Modify(List *plist);
@@ -14,9 +12,9 @@ void Stu_insert(List *plist);
 void Stu_Display(const List *plist);
 void Stu_Statistic(const List *plist);
 
+bool Input_Item(Item *item, List *plist);
 void Item_Display(const Item item);
 void Title_Display(void);
-bool Item_Name_Search(const Item *pi, const List *plist);
 
 char Menu(void);
 char Modify_Menu(void);
@@ -25,14 +23,20 @@ char Sort_Menu(void);
 int main(void)
 {
     List stu;
-    char chooce;
     InitializeList(&stu);
+    char chooce;
     while ((chooce = Menu()) != '0')
     {
         switch (chooce)
         {
         case '1':
-            Stu_Add(&stu);
+            while (Stu_Add(&stu))
+            {
+                printf("enter 'Y' to add next record(other key to cancel): ");
+                char temp[2];
+                if (s_gets(temp, 2) == NULL || temp[0] == '\0' || strchr("yY", temp[0]) == NULL)
+                    break;
+            }
             break;
         case '2':
             Stu_Delete(&stu);
@@ -58,7 +62,7 @@ int main(void)
         default:
             puts("ERROR: Switching error");
         }
-        printf("press ENTER to continue... ");
+        printf("\npress ENTER to continue... ");
         while (getchar() != '\n')
             continue;
     }
@@ -94,7 +98,7 @@ char Menu(void)
     return ch;
 }
 
-void Stu_Add(List *plist)
+bool Stu_Add(List *plist)
 {
     Item temp;
 
@@ -102,37 +106,51 @@ void Stu_Add(List *plist)
         puts("ERROR: No space in the program!");
     else
     {
-        Input_Item(&temp, plist);
+        if (!Input_Item(&temp, plist))
+            return false;
         if (ListAddItem(&temp, plist))
+        {
             puts("Successful.");
+            return true;
+        }
         else
             puts("ERROR: Fail to add record.");
     }
+    return false;
 }
 
-void Input_Item(Item *item, List *plist)
+bool Input_Item(Item *item, List *plist)
 {
     do
     {
-        Get_ID(item->StuID);
+        if (!Get_ID(item->StuID))
+            return false;
         if (InList(item, plist, seek_bID))
             printf("ERROR: ID %s is exist.\n", item->StuID);
     } while (InList(item, plist, seek_bID));
+
     puts("Please enter Student's Name:");
-    s_gets(item->Name, 15);
+    if (s_gets(item->Name, LEN_NAME) == NULL || item->Name[0] == '\0')
+    {
+        puts("Operation canceled");
+        return false;
+    }
     uppercase(item->Name);
     puts("Please enter Student's C language grade:");
-    item->grade.C_lang = Get_Int();
+    if (!Get_Int(&item->grade.C_lang))
+        return false;
     puts("Please enter Student's Math grade:");
-    item->grade.Math = Get_Int();
+    if (!Get_Int(&item->grade.Math))
+        return false;
     puts("Please enter Student's English grade:");
-    item->grade.Eng = Get_Int();
+    if (!Get_Int(&item->grade.Eng))
+        return false;
     puts("Please enter Student's Rating:");
-    item->Rating = Get_Int();
+    if (!Get_Int(&item->Rating))
+        return false;
     item->grade.Total = item->grade.C_lang + item->grade.Math + item->grade.Eng;
     item->grade.Ave = (float)item->grade.Total / 3;
-    while (getchar() != '\n')
-        continue;
+    return true;
 }
 
 void Stu_Delete(List *plist)
@@ -145,7 +163,8 @@ void Stu_Delete(List *plist)
     }
     Stu_Display(plist);
     puts("Please enter the ID of Student you wish to delete:");
-    Get_ID(temp.StuID);
+    if (!Get_ID(temp.StuID))
+        return;
     if (ListDeleteItem(&temp, plist))
         printf("ID %s is dropped from the System.\n", temp.StuID);
     else
@@ -177,7 +196,8 @@ void Stu_Search(const List *plist)
     if (ch == '1')
     {
         Node *found = NULL;
-        Get_ID(temp.StuID);
+        if (!Get_ID(temp.StuID))
+            return;
         found = ListSeekSet(&temp, plist, seek_bID);
         if (found == NULL)
             printf("ERROR: ID %s is not a member.\n", temp.StuID);
@@ -190,7 +210,11 @@ void Stu_Search(const List *plist)
     else
     {
         puts("Please enter Student's Name:");
-        s_gets(temp.Name, 15);
+        if (s_gets(temp.Name, LEN_NAME) == NULL || temp.Name[0] == '\0')
+        {
+            puts("Operation canceled");
+            return false;
+        }
         uppercase(temp.Name);
         if (!InList(&temp, plist, seek_bName))
             printf("ERROR: Name %s is not a member.\n", temp.Name);
@@ -200,26 +224,6 @@ void Stu_Search(const List *plist)
             ListSeekMultiSet(&temp, plist, seek_bName, Item_Display);
         }
     }
-}
-
-bool Item_Name_Search(const Item *pi, const List *plist)
-{
-    Node *look = plist->head;
-    bool isDT = 0;
-    while (look != NULL)
-    {
-        if (strcmp(pi->Name, look->item.Name) == 0)
-        {
-            if (!isDT)
-            {
-                Title_Display();
-                isDT = 1;
-            }
-            Item_Display(look->item);
-        }
-        look = look->next;
-    }
-    return isDT;
 }
 
 void Stu_Modify(List *plist)
@@ -249,9 +253,10 @@ void Stu_Modify(List *plist)
         switch (chooce)
         {
         case '1':
-            Get_ID(temp.StuID);
+            if (!Get_ID(temp.StuID))
+                break;
             if (!InList(&temp, plist, seek_bID))
-                strncpy(fnode->item.StuID, temp.StuID, 10);
+                strncpy(fnode->item.StuID, temp.StuID, LEN_ID);
             else
             {
                 printf("ERROR: ID %s is exist.\n", temp.StuID);
@@ -260,24 +265,32 @@ void Stu_Modify(List *plist)
             break;
         case '2':
             puts("Please enter Student's Name:");
-            s_gets(fnode->item.Name, 15);
+            if (s_gets(fnode->item.Name, LEN_NAME) == NULL || fnode->item.Name[0] == '\0')
+            {
+                puts("Operation canceled");
+                break;
+            }
             uppercase(fnode->item.Name);
             break;
         case '3':
             puts("Please enter Student's C language grade:");
-            fnode->item.grade.C_lang = Get_Int();
+            if (!Get_Int(&fnode->item.grade.C_lang))
+                break;
             break;
         case '4':
             puts("Please enter Student's Math grade:");
-            fnode->item.grade.Math = Get_Int();
+            if (!Get_Int(&fnode->item.grade.Math))
+                break;
             break;
         case '5':
             puts("Please enter Student's English grade:");
-            fnode->item.grade.Eng = Get_Int();
+            if (!Get_Int(&fnode->item.grade.Eng))
+                break;
             break;
         case '6':
             puts("Please enter Student's Rating:");
-            fnode->item.Rating = Get_Int();
+            if (!Get_Int(&fnode->item.Rating))
+                break;
             break;
         default:
             puts("ERROR: Switching error");
@@ -385,7 +398,8 @@ void Stu_insert(List *plist)
 
     Item temp;
     Node *fnode;
-    Get_ID(temp.StuID);
+    if (!Get_ID(temp.StuID))
+        return;
     fnode = ListSeekSet(&temp, plist, seek_bID);
     if (fnode == NULL)
     {
@@ -393,7 +407,8 @@ void Stu_insert(List *plist)
         return;
     }
 
-    Input_Item(&temp, plist);
+    if(!Input_Item(&temp, plist))
+        return;
     if (ListInsertItem(&temp, fnode, plist))
         puts("Insert successful.");
     else
