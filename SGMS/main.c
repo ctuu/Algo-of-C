@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include "list.h"
@@ -30,6 +31,15 @@ int main(void)
 {
     List stu;
     InitializeList(&stu);
+
+    FILE *fp;
+    if ((fp = fopen("sgms.txt", "w")) == NULL)
+    {
+        fprintf(stdout, "Can't open \"sgms\" file.\n");
+        exit(EXIT_FAILURE);
+    }
+    ListOpenFile(fp, &stu, Item_open);
+
     char chooce;
     while ((chooce = Menu()) != '0')
     {
@@ -73,6 +83,8 @@ int main(void)
             continue;
     }
     EmptyTheList(&stu);
+    if (fclose(fp) != 0)
+        fprintf(stderr, "Erroe closing file.\n");
     puts("Bye.");
     return 0;
 }

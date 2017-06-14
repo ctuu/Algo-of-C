@@ -9,6 +9,7 @@ static void swapNode(Node *pn_i, Node *pn_j);
 static void AddNode(Node *new_node, Node *head);
 static void DeleteAllNodes(Node *head);
 static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b));
+
 void InitializeList(List *plist)
 {
     plist->head = NULL;
@@ -315,4 +316,13 @@ static void swapNode(Node *pn_i, Node *pn_j)
     temp = pn_i->item;
     pn_i->item = pn_j->item;
     pn_j->item = temp;
+}
+
+bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi))
+{
+    Item temp;
+    while ((*open)(fp, &temp))
+        if (!ListAddItem(&temp, plist))
+            return false;
+    return true;
 }

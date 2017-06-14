@@ -23,7 +23,7 @@ typedef struct StuGrade
 typedef struct Student
 {
     char StuID[LEN_ID];
-    char Name[15];
+    char Name[LEN_NAME];
     Grade grade;
     int Rating;
 } Item;
@@ -64,6 +64,8 @@ bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item
 Node *GetNextNode(Node *pnode, bool inorder);
 Node *GetHead(const List *plist, bool inorder);
 
+bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi));
+
 
 //get_data.c
 bool Get_Int(int *num);
@@ -83,4 +85,7 @@ bool Cmp_bRat(const Item *pn_a, const Item *pn_b);
 //stu_seek.c
 bool seek_bID(const Item *pi, const Item *pj);
 bool seek_bName(const Item *pi, const Item *pj);
+
+//stu_file.c
+bool Item_open(FILE *fp, Item *pi);
 #endif
