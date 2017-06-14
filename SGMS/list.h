@@ -1,3 +1,4 @@
+//Code by ctuu
 #ifndef LIST_H_
 #define LISH_H_
 #include <stdbool.h>
