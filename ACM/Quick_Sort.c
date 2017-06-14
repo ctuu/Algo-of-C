@@ -1,8 +1,8 @@
-//int num[NUM] = {3, 7, 5, 4, 2, 6, 8, 1, 2};
+// int num[NUM] = {3, 7, 5, 4, 2, 6, 8, 1, 2};
 
 #include <stdio.h>
-#define NUM 3
-int num[NUM] = {12, 123,23};
+#define NUM 9
+int num[NUM] = {3, 7, 5, 4, 2, 6, 8, 1, 2};
 void quicksort(int i, int j);
 
 int main(void)
@@ -27,11 +27,11 @@ void quicksort(int i, int j)
     {
         for (; a < b;)
         {
-            while (num[a] <= num[j] && a < b)
+            while (!(num[a] > num[j]) && a < b)
                 a++;
             while (num[b] > num[j] && a < b)
                 b--;
-            if (num[a] >= num[j] && num[b] <= num[j])
+            if (!(num[j] > num[a]) && !(num[b] > num[j]))
             {
                 temp = num[a];
                 num[a] = num[b];

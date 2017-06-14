@@ -1,6 +1,6 @@
+//Code by ctuu
 #include <stdio.h>
 #include <string.h>
-//Code by ctuu
 #include <stdlib.h>
 #include "list.h"
 static void CopyToNode(Item item, Node *pnode);
@@ -264,7 +264,7 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
                 b--;
                 pn_b = NodeGetPre(pn_b);
             }
-            if ((*cmp)(&pn_a->item, &pn_j->item) && !(*cmp)(&pn_b->item, &pn_j->item))
+            if (!(*cmp)(&pn_j->item, &pn_a->item) && !(*cmp)(&pn_b->item, &pn_j->item))
             {
                 swapNode(pn_a, pn_b);
             }
