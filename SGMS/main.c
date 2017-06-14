@@ -115,9 +115,9 @@ void Input_Item(Item *item, List *plist)
     do
     {
         Get_ID(item->StuID);
-        if (InList(item, plist))
+        if (InList(item, plist, seek_bID))
             printf("ERROR: ID %s is exist.\n", item->StuID);
-    } while (InList(item, plist));
+    } while (InList(item, plist, seek_bID));
     puts("Please enter Student's Name:");
     s_gets(item->Name, 15);
     uppercase(item->Name);
@@ -149,7 +149,7 @@ void Stu_Delete(List *plist)
     if (ListDeleteItem(&temp, plist))
         printf("ID %s is dropped from the System.\n", temp.StuID);
     else
-        printf("ERROR: Id %s is not a member.\n",temp.StuID);
+        printf("ERROR: Id %s is not a member.\n", temp.StuID);
 }
 
 void Stu_Search(const List *plist)
@@ -178,7 +178,7 @@ void Stu_Search(const List *plist)
     {
         Node *found = NULL;
         Get_ID(temp.StuID);
-        found = ListSeekID(&temp, plist);
+        found = ListSeekSet(&temp, plist, seek_bID);
         if (found == NULL)
             printf("ERROR: ID %s is not a member.\n", temp.StuID);
         else
@@ -192,8 +192,13 @@ void Stu_Search(const List *plist)
         puts("Please enter Student's Name:");
         s_gets(temp.Name, 15);
         uppercase(temp.Name);
-        if (!Item_Name_Search(&temp, plist))
+        if (!InList(&temp, plist, seek_bName))
             printf("ERROR: Name %s is not a member.\n", temp.Name);
+        else
+        {
+            Title_Display();
+            ListSeekMultiSet(&temp, plist, seek_bName, Item_Display);
+        }
     }
 }
 
@@ -229,7 +234,7 @@ void Stu_Modify(List *plist)
     Item temp;
     Node *fnode;
     Get_ID(temp.StuID);
-    fnode = ListSeekID(&temp, plist);
+    fnode = ListSeekSet(&temp, plist, seek_bID);
     if (fnode == NULL)
     {
         printf("ERROR: ID %s is not a member.\n", temp.StuID);
@@ -245,7 +250,7 @@ void Stu_Modify(List *plist)
         {
         case '1':
             Get_ID(temp.StuID);
-            if (!InList(&temp, plist))
+            if (!InList(&temp, plist, seek_bID))
                 strncpy(fnode->item.StuID, temp.StuID, 10);
             else
             {
@@ -381,7 +386,7 @@ void Stu_insert(List *plist)
     Item temp;
     Node *fnode;
     Get_ID(temp.StuID);
-    fnode = ListSeekID(&temp, plist);
+    fnode = ListSeekSet(&temp, plist, seek_bID);
     if (fnode == NULL)
     {
         printf("ERROR: ID %s is not a member.\n", temp.StuID);

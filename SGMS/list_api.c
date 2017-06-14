@@ -52,7 +52,7 @@ bool ListAddItem(Item *pi, List *plist)
         fprintf(stderr, "ERROR: List is full\n");
         return false;
     }
-    if (ListSeekID(pi, plist) != NULL)
+    if (ListSeekSet(pi, plist, seek_bID) != NULL)
     {
         fprintf(stderr, "ERROR: Attempted to add duplicate item\n");
         return false;
@@ -101,15 +101,15 @@ static void AddNode(Node *new_node, Node *head)
     new_node->pre = head;
 }
 
-bool InList(const Item *pi, const List *plist)
+bool InList(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj))
 {
-    return (ListSeekID(pi, plist) == NULL) ? false : true;
+    return (ListSeekSet(pi, plist, (*seek)) == NULL) ? false : true;
 }
 
 bool ListDeleteItem(const Item *pi, List *plist)
 {
     Node *look = NULL;
-    look = ListSeekID(pi, plist);
+    look = ListSeekSet(pi, plist, seek_bID);
     if (look == NULL)
         return false;
     plist->size--;
@@ -173,17 +173,33 @@ static void DeleteAllNodes(Node *head)
     }
 }
 
-Node *ListSeekID(const Item *pi, const List *plist)
+Node *ListSeekSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj))
 {
     Node *look = plist->head;
     while (look != NULL)
     {
-        if (strcmp(pi->StuID, look->item.StuID) != 0)
+        if (!(*seek)(pi, &look->item))
             look = look->next;
         else
             break;
     }
     return look;
+}
+
+bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj), void (*pfun)(Item item))
+{
+    bool isDT = 0;
+    Node *look = plist->head;
+    while (look != NULL)
+    {
+        if ((*seek)(pi, &look->item))
+        {
+            isDT = 1;
+            (*pfun)(look->item);
+        }
+        look = look->next;
+    }
+    return isDT;
 }
 
 bool ListInsertItem(Item *pi, Node *pnode, List *plist)
@@ -194,7 +210,7 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
         fprintf(stderr, "ERROR: List is full\n");
         return false;
     }
-    if (ListSeekID(pi, plist) != NULL)
+    if (ListSeekSet(pi, plist, seek_bID) != NULL)
     {
         fprintf(stderr, "ERROR: Attempted to add duplicate item\n");
         return false;
@@ -205,7 +221,7 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
         fprintf(stderr, "ERROR: Couldn't create node\n");
         return false;
     }
-    if (!InList(&pnode->item, plist))
+    if (!InList(&pnode->item, plist, seek_bID))
     {
         fprintf(stderr, "ERROR: Node is not exist.\n");
         return false;
@@ -223,7 +239,7 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
     pnode->pre = new_node;
     return true;
 }
-void ListSort(List *plist, bool (*cmp)(const Item *a,const Item *b))
+void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b))
 {
     QuickSort(0, plist->size - 1, plist->head, plist->tail, plist, (*cmp));
 }

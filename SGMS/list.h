@@ -41,9 +41,10 @@ unsigned int ListItemCount(const List *plist);
 bool ListAddItem(Item *item, List *plist);
 void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder);
 void EmptyTheList(List *plist);
-bool InList(const Item *pi, const List *plist);
+bool InList(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj));
 bool ListDeleteItem(const Item *pi, List *plist);
-Node *ListSeekID(const Item *pi, const List *plist);
+Node *ListSeekSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj));
+bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj), void(*pfun)(Item item));
 bool ListInsertItem(Item *item, Node *pnode, List *plist);
 void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b));
 
@@ -62,4 +63,8 @@ bool Cmp_bMG(const Item *pn_a, const Item *pn_b);
 bool Cmp_bEG(const Item *pn_a, const Item *pn_b);
 bool Cmp_bTG(const Item *pn_a, const Item *pn_b);
 bool Cmp_bRat(const Item *pn_a, const Item *pn_b);
+
+//stu_seek.c
+bool seek_bID(const Item *pi, const Item *pj);
+bool seek_bName(const Item *pi, const Item *pj);
 #endif
