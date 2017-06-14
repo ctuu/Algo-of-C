@@ -1,7 +1,6 @@
 #ifndef LIST_H_
 #define LISH_H_
 #include <stdbool.h>
-
 struct Grade 
 {
     unsigned int C_lang;

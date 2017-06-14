@@ -49,18 +49,18 @@ bool ListAddItem(Item *pi, List *plist)
     Node *new_node;
     if (ListIsFull(plist))
     {
-        fprintf(stderr, "List is full\n");
+        fprintf(stderr, "ERROR: List is full\n");
         return false;
     }
     if (ListSeekID(pi, plist) != NULL)
     {
-        fprintf(stderr, "Attempted to add duplicate item\n");
+        fprintf(stderr, "ERROR: Attempted to add duplicate item\n");
         return false;
     }
     new_node = MakeNode(pi);
     if (new_node == NULL)
     {
-        fprintf(stderr, "Couldn't create node\n");
+        fprintf(stderr, "ERROR: Couldn't create node\n");
         return false;
     }
     plist->size++;
@@ -179,13 +179,9 @@ Node *ListSeekID(const Item *pi, const List *plist)
     while (look != NULL)
     {
         if (strcmp(pi->StuID, look->item.StuID) != 0)
-        {
             look = look->next;
-        }
         else
-        {
             break;
-        }
     }
     return look;
 }
@@ -195,23 +191,23 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
     Node *new_node;
     if (ListIsFull(plist))
     {
-        fprintf(stderr, "List is full\n");
+        fprintf(stderr, "ERROR: List is full\n");
         return false;
     }
     if (ListSeekID(pi, plist) != NULL)
     {
-        fprintf(stderr, "Attempted to add duplicate item\n");
+        fprintf(stderr, "ERROR: Attempted to add duplicate item\n");
         return false;
     }
     new_node = MakeNode(pi);
     if (new_node == NULL)
     {
-        fprintf(stderr, "Couldn't create node\n");
+        fprintf(stderr, "ERROR: Couldn't create node\n");
         return false;
     }
     if (!InList(&pnode->item, plist))
     {
-        fprintf(stderr, "Node is not exist.\n");
+        fprintf(stderr, "ERROR: Node is not exist.\n");
         return false;
     }
 

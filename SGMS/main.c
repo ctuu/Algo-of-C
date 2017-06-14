@@ -56,7 +56,7 @@ int main(void)
             Stu_Statistic(&stu);
             break;
         default:
-            puts("Switching error");
+            puts("ERROR: Switching error");
         }
         printf("press ENTER to continue... ");
         while (getchar() != '\n')
@@ -84,7 +84,7 @@ char Menu(void)
             continue;
         ch = tolower(ch);
         if (strchr("123456780", ch) == NULL)
-            puts("Please enter 1 ~ 8 or 0:");
+            puts("ERROR: Please enter 1 ~ 8 or 0:");
         else
             break;
     }
@@ -99,14 +99,14 @@ void Stu_Add(List *plist)
     Item temp;
 
     if (ListIsFull(plist))
-        puts("No space in the program!");
+        puts("ERROR: No space in the program!");
     else
     {
         Input_Item(&temp, plist);
         if (ListAddItem(&temp, plist))
             puts("Successful.");
         else
-            puts("Fail to add record.");
+            puts("ERROR: Fail to add record.");
     }
 }
 
@@ -140,17 +140,16 @@ void Stu_Delete(List *plist)
     Item temp;
     if (ListIsEmpty(plist))
     {
-        puts("No entries!");
+        puts("ERROR: No entries!");
         return;
     }
     Stu_Display(plist);
     puts("Please enter the ID of Student you wish to delete:");
     Get_ID(temp.StuID);
-    printf("ID %s ", temp.StuID);
     if (ListDeleteItem(&temp, plist))
-        printf("is dropped from the System.\n");
+        printf("ID %s is dropped from the System.\n", temp.StuID);
     else
-        printf("is not a member.\n");
+        printf("ERROR: Id %s is not a member.\n",temp.StuID);
 }
 
 void Stu_Search(const List *plist)
@@ -158,7 +157,7 @@ void Stu_Search(const List *plist)
     Item temp;
     if (ListIsEmpty(plist))
     {
-        puts("No entries!");
+        puts("ERROR: No entries!");
         return;
     }
 
@@ -171,7 +170,7 @@ void Stu_Search(const List *plist)
             continue;
         ch = tolower(ch);
         if (strchr("12", ch) == NULL)
-            puts("Please enter 1 or 2:");
+            puts("ERROR: Please enter 1 or 2:");
         else
             break;
     }
@@ -181,7 +180,7 @@ void Stu_Search(const List *plist)
         Get_ID(temp.StuID);
         found = ListSeekID(&temp, plist);
         if (found == NULL)
-            printf("ID %s is not a member.\n", temp.StuID);
+            printf("ERROR: ID %s is not a member.\n", temp.StuID);
         else
         {
             Title_Display();
@@ -194,7 +193,7 @@ void Stu_Search(const List *plist)
         s_gets(temp.Name, 15);
         uppercase(temp.Name);
         if (!Item_Name_Search(&temp, plist))
-            printf("Name %s is not a member.\n", temp.Name);
+            printf("ERROR: Name %s is not a member.\n", temp.Name);
     }
 }
 
@@ -222,7 +221,7 @@ void Stu_Modify(List *plist)
 {
     if (ListIsEmpty(plist))
     {
-        puts("No entries!");
+        puts("ERROR: No entries!");
         return;
     }
     Stu_Display(plist);
@@ -276,7 +275,7 @@ void Stu_Modify(List *plist)
             fnode->item.Rating = Get_Int();
             break;
         default:
-            puts("Switching error");
+            puts("ERROR: Switching error");
         }
         fnode->item.grade.Total = fnode->item.grade.C_lang + fnode->item.grade.Math + fnode->item.grade.Eng;
         fnode->item.grade.Ave = (float)fnode->item.grade.Total / 3;
@@ -299,7 +298,7 @@ char Modify_Menu(void)
             continue;
         ch = tolower(ch);
         if (strchr("0123456", ch) == NULL)
-            puts("Please enter 1 ~ 6 or 0:");
+            puts("ERROR: Please enter 1 ~ 6 or 0:");
         else
             break;
     }
@@ -312,7 +311,7 @@ void Stu_Sort(List *plist)
 {
     if (ListIsEmpty(plist))
     {
-        puts("No entries!");
+        puts("ERROR: No entries!");
         return;
     }
     Stu_Display(plist);
@@ -361,7 +360,7 @@ char Sort_Menu(void)
             continue;
         ch = tolower(ch);
         if (strchr("01234567", ch) == NULL)
-            puts("Please enter 1 ~ 7 or 0:");
+            puts("ERROR: Please enter 1 ~ 7 or 0:");
         else
             break;
     }
@@ -375,7 +374,7 @@ void Stu_insert(List *plist)
     Stu_Display(plist);
     if (ListIsFull(plist))
     {
-        puts("No space in the program!");
+        puts("ERROR: No space in the program!");
         return;
     }
 
@@ -393,13 +392,13 @@ void Stu_insert(List *plist)
     if (ListInsertItem(&temp, fnode, plist))
         puts("Insert successful.");
     else
-        puts("Fail to insert record.");
+        puts("ERROR: Fail to insert record.");
 }
 
 void Stu_Display(const List *plist)
 {
     if (ListIsEmpty(plist))
-        puts("No entries!");
+        puts("ERROR: No entries!");
     else
     {
         Title_Display();
