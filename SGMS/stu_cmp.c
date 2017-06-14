@@ -6,12 +6,15 @@ static bool Str_Cmp(const char *a, const char *b);
 
 bool Cmp_bID(const Item *pn_a, const Item *pn_b)
 {
-    return Str_Cmp(pn_a->StuID, pn_b->StuID);
+    if (strlen(pn_a->StuID) == strlen(pn_b->StuID))
+        return Str_Cmp(pn_a->StuID, pn_b->StuID);
+    else
+        return strlen(pn_a->StuID) > strlen(pn_b->StuID);
 }
 
 bool Cmp_bName(const Item *pn_a, const Item *pn_b)
 {
-    if (Str_Cmp(pn_a->Name, pn_b->Name) != 0)
+    if (strcmp(pn_a->Name, pn_b->Name) != 0)
         return Str_Cmp(pn_a->Name, pn_b->Name);
     else
         return Cmp_bID(pn_a, pn_b);

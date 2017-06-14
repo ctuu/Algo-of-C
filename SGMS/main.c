@@ -315,8 +315,9 @@ void Stu_Sort(List *plist)
         puts("No entries!");
         return;
     }
+    Stu_Display(plist);
     char chooce;
-    while ((chooce = Modify_Menu()) != '0')
+    while ((chooce = Sort_Menu()) != '0')
     {
         switch (chooce)
         {

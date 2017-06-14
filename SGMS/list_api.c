@@ -4,7 +4,7 @@
 #include "list.h"
 static void CopyToNode(Item item, Node *pnode);
 static Node *MakeNode(const Item *pi);
-static void swapNode(Node *pn_i, Node *pn_j, List *plist);
+static void swapNode(Node *pn_i, Node *pn_j);
 static void AddNode(Node *new_node, Node *head);
 static void DeleteAllNodes(Node *head);
 static Node *NodeGetPre(Node *pnode);
@@ -251,14 +251,14 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
                 b--;
                 pn_b = NodeGetPre(pn_b);
             }
-            if ((*cmp)(&pn_a->item, &pn_j->item) &&(*cmp)(&pn_b->item, &pn_j->item))
+            if ((*cmp)(&pn_a->item, &pn_j->item) && !(*cmp)(&pn_b->item, &pn_j->item))
             {
-                swapNode(pn_a, pn_b, plist);
+                swapNode(pn_a, pn_b);
             }
         }
         if ((*cmp)(&pn_a->item, &pn_j->item))
         {
-            swapNode(pn_a, pn_j, plist);
+            swapNode(pn_a, pn_j);
         }
         QuickSort(i, a, pn_i, pn_a, plist, (*cmp));
         QuickSort(b, j, pn_b, pn_j, plist, (*cmp));
@@ -267,27 +267,27 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
     {
         if ((*cmp)(&pn_i->item, &pn_j->item))
         {
-            swapNode(pn_i, pn_j, plist);
+            swapNode(pn_i, pn_j);
         }
     }
 }
 
 static Node *NodeGetPre(Node *pnode)
 {
-    if (pnode->pre == NULL)
-        return NULL;
+    if (pnode == NULL)
+        return pnode;
     else
         return pnode->pre;
 }
 static Node *NodeGetNext(Node *pnode)
 {
-    if (pnode->next == NULL)
-        return NULL;
+    if (pnode == NULL)
+        return pnode;
     else
         return pnode->next;
 }
 
-static void swapNode(Node *pn_i, Node *pn_j, List *plist)
+static void swapNode(Node *pn_i, Node *pn_j)
 {
     Item temp;
     temp = pn_i->item;

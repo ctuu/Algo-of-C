@@ -1,37 +1,9 @@
-void quicksort(int i, int j)
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+int main(void)
 {
-    int a = i;
-    int b = j - 1;
-    int temp;
-    if (a < b)
-    {
-        while (a < b)
-        {
-            while (num[a] <= num[j] && a < b)
-                a++;
-            while (num[b] > num[j] && a < b)
-                b--;
-            if (num[a] >= num[j] && num[b] <= num[j])
-            {
-                temp = num[a];
-                num[a] = num[b];
-                num[b] = temp;
-            }
-        }
-        if (num[a] > num[j])
-        {
-        swap();
-        }
-        quicksort(i, a);
-        quicksort(b, j);
-    }
-    else if (a == b)
-    {
-        if (num[i] > num[j])
-        {
-            temp = num[i];
-            num[i] = num[j];
-            num[j] = temp;
-        }
-    }
+    printf("123-12: %d\n", strcmp("123", "12"));
+    printf("23-12: %d\n", strcmp("23", "12"));
+    return 0;
 }

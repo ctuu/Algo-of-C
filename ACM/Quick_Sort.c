@@ -1,8 +1,8 @@
 //int num[NUM] = {3, 7, 5, 4, 2, 6, 8, 1, 2};
 
 #include <stdio.h>
-#define NUM 5
-int num[NUM] = {3, 3,2,2,4};
+#define NUM 3
+int num[NUM] = {12, 123,23};
 void quicksort(int i, int j);
 
 int main(void)
