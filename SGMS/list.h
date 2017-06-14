@@ -65,6 +65,7 @@ Node *GetNextNode(Node *pnode, bool inorder);
 Node *GetHead(const List *plist, bool inorder);
 
 bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi));
+bool ListSaveFile(FILE *fp, const List *plist, bool (*save)(FILE *fp, Item *pi));
 
 
 //get_data.c
@@ -88,4 +89,5 @@ bool seek_bName(const Item *pi, const Item *pj);
 
 //stu_file.c
 bool Item_open(FILE *fp, Item *pi);
+bool Item_save(FILE *fp, Item *pi);
 #endif

@@ -4,5 +4,6 @@
 int main(void)
 {
     printf("%d", (79 < 60));
+    puts("eee");
     return 0;
 }

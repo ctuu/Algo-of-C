@@ -14,6 +14,7 @@ void Stu_Sort(List *plist);
 void Stu_insert(List *plist);
 void Stu_Display(const List *plist);
 void Stu_Statistic(const List *plist);
+void Stu_Saved(const List *plist);
 
 bool Input_Item(Item *item, List *plist);
 void Item_Display(const Item item);
@@ -33,13 +34,18 @@ int main(void)
     InitializeList(&stu);
 
     FILE *fp;
-    if ((fp = fopen("sgms.txt", "w")) == NULL)
+    
+
+    if ((fp = fopen("sgms.txt", "r")) == NULL)
     {
         fprintf(stdout, "Can't open \"sgms\" file.\n");
         exit(EXIT_FAILURE);
     }
-    ListOpenFile(fp, &stu, Item_open);
-
+    else if (ListOpenFile(fp, &stu, Item_open))
+    {
+        if (fclose(fp) != 0)
+            fprintf(stderr, "Erroe closing file.\n");
+    }
     char chooce;
     while ((chooce = Menu()) != '0')
     {
@@ -75,6 +81,9 @@ int main(void)
         case '8':
             Stu_Statistic(&stu);
             break;
+        case '9':
+            Stu_Saved(&stu);
+            break;
         default:
             puts("ERROR: Switching error");
         }
@@ -83,8 +92,7 @@ int main(void)
             continue;
     }
     EmptyTheList(&stu);
-    if (fclose(fp) != 0)
-        fprintf(stderr, "Erroe closing file.\n");
+
     puts("Bye.");
     return 0;
 }
@@ -99,14 +107,14 @@ char Menu(void)
     puts("3) search  record             4) modify record");
     puts("5) sort    record             6) insert record");
     puts("7) display record             8) statistics");
-    puts("0) quit");
+    puts("9) save record                0) quit");
     while ((ch = getchar()) != EOF)
     {
         while (getchar() != '\n')
             continue;
         ch = tolower(ch);
-        if (strchr("123456780", ch) == NULL)
-            puts("ERROR: Please enter 1 ~ 8 or 0:");
+        if (strchr("1234567890", ch) == NULL)
+            puts("ERROR: Please enter 1 ~ 9 or 0:");
         else
             break;
     }
@@ -417,6 +425,7 @@ void Stu_insert(List *plist)
 
     Item temp;
     Node *fnode;
+    puts("Select the location to insert:");
     if (!Get_ID(temp.StuID))
         return;
     fnode = ListSeekSet(&temp, plist, seek_bID);
@@ -425,7 +434,7 @@ void Stu_insert(List *plist)
         printf("ERROR: ID %s is not a member.\n", temp.StuID);
         return;
     }
-
+    printf("Data will be insert before ID %s.\n", temp.StuID);
     if (!Input_Item(&temp, plist))
         return;
     if (ListInsertItem(&temp, fnode, plist))
@@ -461,7 +470,6 @@ void Stu_Statistic(const List *plist)
         puts("ERROR: No entries!");
     else
     {
-        printf("size: %d\n", plist->size);
         Node *head = GetHead(plist, 0);
         Grade g_min = head->item.grade;
         Grade g_max = g_min;
@@ -484,11 +492,12 @@ void Stu_Statistic(const List *plist)
         }
         Stat_Title();
         Stat_Display(&g_min, &g_max, &g_tot, &g_failed, plist);
+        printf("\nTotal Size: %d\n", plist->size);
     }
 }
 void Stat_Title(void)
 {
-    puts("\n--------Statistic--------");
+    puts("\n------------------Statistics------------------");
     printf("%10s |Lowest |Hightest |Average |Failure\n", " ");
 }
 void Stat_Display(Grade *g_min, Grade *g_max, Grade *g_tot, Grade *g_failed, const List *plist)
@@ -513,5 +522,20 @@ void Stat_GetMin(Grade *gcur, const Grade *head, bool inorder)
         gcur->C_lang = MIN(gcur->C_lang, head->C_lang);
         gcur->Math = MIN(gcur->Math, head->Math);
         gcur->Eng = MIN(gcur->Eng, head->Eng);
+    }
+}
+
+void Stu_Saved(const List *plist)
+{
+    FILE *fp;
+    if ((fp = fopen("sgms.txt", "w")) == NULL)
+    {
+        fprintf(stdout, "Can't open \"sgms\" file.\n");
+        exit(EXIT_FAILURE);
+    }
+    if (ListSaveFile(fp, plist, Item_save))
+    {
+        if (fclose(fp) != 0)
+            fprintf(stderr, "Erroe closing file.\n");
     }
 }

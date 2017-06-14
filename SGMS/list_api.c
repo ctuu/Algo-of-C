@@ -49,18 +49,18 @@ bool ListAddItem(Item *pi, List *plist)
     Node *new_node;
     if (ListIsFull(plist))
     {
-        fprintf(stderr, "ERROR: List is full\n");
+        fprintf(stderr, "ERROR: List is full.\n");
         return false;
     }
     if (ListSeekSet(pi, plist, seek_bID) != NULL)
     {
-        fprintf(stderr, "ERROR: Attempted to add duplicate item\n");
+        fprintf(stderr, "ERROR: Attempted to add duplicate item.\n");
         return false;
     }
     new_node = MakeNode(pi);
     if (new_node == NULL)
     {
-        fprintf(stderr, "ERROR: Couldn't create node\n");
+        fprintf(stderr, "ERROR: Couldn't create node.\n");
         return false;
     }
     plist->size++;
@@ -207,18 +207,18 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
     Node *new_node;
     if (ListIsFull(plist))
     {
-        fprintf(stderr, "ERROR: List is full\n");
+        fprintf(stderr, "ERROR: List is full.\n");
         return false;
     }
     if (ListSeekSet(pi, plist, seek_bID) != NULL)
     {
-        fprintf(stderr, "ERROR: Attempted to add duplicate item\n");
+        fprintf(stderr, "ERROR: Attempted to add duplicate item.\n");
         return false;
     }
     new_node = MakeNode(pi);
     if (new_node == NULL)
     {
-        fprintf(stderr, "ERROR: Couldn't create node\n");
+        fprintf(stderr, "ERROR: Couldn't create node.\n");
         return false;
     }
     if (!InList(&pnode->item, plist, seek_bID))
@@ -324,5 +324,19 @@ bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi))
     while ((*open)(fp, &temp))
         if (!ListAddItem(&temp, plist))
             return false;
+    puts("File read complete.");
+    printf("Read %d records.\n", plist->size);
+    return true;
+}
+
+bool ListSaveFile(FILE *fp,const List *plist, bool (*save)(FILE *fp, Item *pi))
+{
+    Node *head = GetHead(plist, 0);
+    while (head != NULL)
+    {
+        (*save)(fp, &head->item);
+        head = GetNextNode(head, 0);
+    }
+    puts("File saved.");
     return true;
 }

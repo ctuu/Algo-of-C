@@ -22,7 +22,7 @@ bool Get_ID(char *stuid)
         s_gets(stuid, LEN_ID);
         if (Get_NULL(stuid))
         {
-            puts("Operation canceled");
+            puts("Operation canceled.");
             return false;
         }
         if (!IsDigit(stuid))
@@ -39,11 +39,11 @@ bool Get_Int(int *num)
         s_gets(ch_num, LEN_NUM);
         if (Get_NULL(ch_num))
         {
-            puts("Operation canceled");
+            puts("Operation canceled.");
             return false;
         }
         if (!IsDigit(ch_num))
-            printf("ERROR: %s is not an integer.\nPlease enter an integer value: ", ch_num);
+            printf("ERROR: %s is not an integer.\nPlease enter an integer value:\n", ch_num);
     } while (!IsDigit(ch_num));
     *num = atoi(ch_num);
     return true;

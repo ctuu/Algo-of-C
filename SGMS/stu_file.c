@@ -6,11 +6,26 @@
 
 bool Item_open(FILE *fp, Item *pi)
 {
-    if (fscanf(fp, "%s,%s,%d,%d,%d,%d", pi->StuID, pi->Name, &pi->grade.C_lang,&pi->grade.Math, &pi->grade.Eng, pi->Rating) == 6)
+    if (fscanf(fp, "%[^,],%[^,],%d,%d,%d,%d\n", pi->StuID, pi->Name, &pi->grade.C_lang, &pi->grade.Math, &pi->grade.Eng, &pi->Rating) == 6)
     {
-        item->grade.Total = item->grade.C_lang + item->grade.Math + item->grade.Eng;
-        item->grade.Ave = (float)item->grade.Total / 3;
+        pi->grade.Total = pi->grade.C_lang + pi->grade.Math + pi->grade.Eng;
+        pi->grade.Ave = (float)pi->grade.Total / 3;
         return true;
     }
-    return false;
+    else
+    {
+        fprintf(stderr, "ERROR: Data can not be read.\n");
+        return false;
+    }
+}
+
+bool Item_save(FILE *fp, Item *pi)
+{
+    if (fprintf(fp, "%s,%s,%d,%d,%d,%d\n", pi->StuID, pi->Name, pi->grade.C_lang, pi->grade.Math, pi->grade.Eng, pi->Rating))
+        return true;
+    else
+    {
+        fprintf(stderr, "ERROR: Data can not be write.\n");
+        return false;
+    }
 }
