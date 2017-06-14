@@ -2,6 +2,8 @@
 #include <string.h>
 #include <ctype.h>
 #include "list.h"
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 bool Stu_Add(List *plist);
 void Stu_Delete(List *plist);
@@ -19,6 +21,10 @@ void Title_Display(void);
 char Menu(void);
 char Modify_Menu(void);
 char Sort_Menu(void);
+
+void Stat_GetMin(Grade *gcur, const Grade *head, bool inorder);
+void Stat_Title(void);
+void Stat_Display(Grade *g_min, Grade *g_max, Grade *g_tot, Grade *g_failed, const List *plist);
 
 int main(void)
 {
@@ -75,8 +81,8 @@ char Menu(void)
 {
     char ch;
 
-    puts("The Students' Grade Management System");
-    puts("Enter the letter correspinding to your choice:");
+    printf("\n----The Students' Grade Management System----\n");
+    puts("Enter the number to your choice:");
     puts("1) add     record             2) delete record");
     puts("3) search  record             4) modify record");
     puts("5) sort    record             6) insert record");
@@ -237,7 +243,8 @@ void Stu_Modify(List *plist)
 
     Item temp;
     Node *fnode;
-    Get_ID(temp.StuID);
+    if (!Get_ID(temp.StuID))
+        return;
     fnode = ListSeekSet(&temp, plist, seek_bID);
     if (fnode == NULL)
     {
@@ -407,7 +414,7 @@ void Stu_insert(List *plist)
         return;
     }
 
-    if(!Input_Item(&temp, plist))
+    if (!Input_Item(&temp, plist))
         return;
     if (ListInsertItem(&temp, fnode, plist))
         puts("Insert successful.");
@@ -428,15 +435,71 @@ void Stu_Display(const List *plist)
 
 void Title_Display(void)
 {
-    puts("|ID         |Name            |C Language Grade  |Math Grade  |English Grade  |Total Grade  |Average Grade  |Rating");
+    printf("|ID%8s |Name%11s |C Language Grade |Math Grade |English Grade |Total Grade |Average Grade |Rating\n", " ", " ");
 }
 void Item_Display(const Item item)
 {
     printf(" %-10s  %-15s", item.StuID, item.Name);
-    printf("  %-3d                %-3d          %-3d             %-3d           %-5.2f", item.grade.C_lang, item.grade.Math, item.grade.Eng, item.grade.Total, item.grade.Ave);
-    printf("           %-4d\n", item.Rating);
+    printf("  %6s%4d%6s  %3s%4d%3s  %4s%4d%5s  %3s%5d%3s  %3s%6.2f%4s", " ", item.grade.C_lang, " ", " ", item.grade.Math, " ", " ", item.grade.Eng, " ", " ", item.grade.Total, " ", " ", item.grade.Ave, " ");
+    printf("  %4d\n", item.Rating);
 }
 void Stu_Statistic(const List *plist)
 {
-    printf("size: %d\n", plist->size);
+    if (ListIsEmpty(plist))
+        puts("ERROR: No entries!");
+    else
+    {
+        printf("size: %d\n", plist->size);
+        Node *head = GetHead(plist, 0);
+        Grade g_min = head->item.grade;
+        Grade g_max = g_min;
+        Grade g_tot = {0, 0, 0, 0, 0};
+        Grade g_failed = {0, 0, 0, 0, 0};
+        while (head != NULL)
+        {
+            Stat_GetMin(&g_min, &head->item.grade, 0);
+            Stat_GetMin(&g_max, &head->item.grade, 1);
+
+            g_tot.C_lang += head->item.grade.C_lang;
+            g_tot.Math += head->item.grade.Math;
+            g_tot.Eng += head->item.grade.Eng;
+            g_tot.Total += head->item.grade.Total;
+
+            g_failed.C_lang += (head->item.grade.C_lang < C_PASSED);
+            g_failed.Math += (head->item.grade.Math < MATH_PASSED);
+            g_failed.Eng += (head->item.grade.Eng < ENG_PASSED);
+            head = GetNextNode(head, 0);
+        }
+        Stat_Title();
+        Stat_Display(&g_min, &g_max, &g_tot, &g_failed, plist);
+    }
+}
+void Stat_Title(void)
+{
+    puts("\n--------Statistic--------");
+    printf("%10s |Lowest |Hightest |Average |Failure\n", " ");
+}
+void Stat_Display(Grade *g_min, Grade *g_max, Grade *g_tot, Grade *g_failed, const List *plist)
+{
+    int tot_min = MIN(g_min->C_lang, MIN(g_min->Math, g_min->C_lang));
+    int tot_max = MAX(g_max->C_lang, MAX(g_max->Math, g_max->C_lang));
+    printf("%-10s  %s%4d%s  %2s%4d%2s  %6.2f%s  %5d\n", "C_language", " ", g_min->C_lang, " ", " ", g_max->C_lang, " ", (float)g_tot->C_lang / plist->size, " ", g_failed->C_lang);
+    printf("%-10s  %s%4d%s  %2s%4d%2s  %6.2f%s  %5d\n", "Math", " ", g_min->Math, " ", " ", g_max->Math, " ", (float)g_tot->Math / plist->size, " ", g_failed->Math);
+    printf("%-10s  %s%4d%s  %2s%4d%2s  %6.2f%s  %5d\n", "Eng", " ", g_min->Eng, " ", " ", g_max->Eng, " ", (float)g_tot->Eng / plist->size, " ", g_failed->Eng);
+    printf("%-10s  %s%4d%s  %2s%4d%2s  %6.2f%s  %5d\n", "Total", " ", tot_min, " ", " ", tot_max, " ", (float)(g_tot->C_lang + g_tot->Math + g_tot->Eng) / (3 * plist->size), " ", g_failed->C_lang + g_failed->Math + g_failed->Eng);
+}
+void Stat_GetMin(Grade *gcur, const Grade *head, bool inorder)
+{
+    if (inorder)
+    {
+        gcur->C_lang = MAX(gcur->C_lang, head->C_lang);
+        gcur->Math = MAX(gcur->Math, head->Math);
+        gcur->Eng = MAX(gcur->Eng, head->Eng);
+    }
+    else
+    {
+        gcur->C_lang = MIN(gcur->C_lang, head->C_lang);
+        gcur->Math = MIN(gcur->Math, head->Math);
+        gcur->Eng = MIN(gcur->Eng, head->Eng);
+    }
 }

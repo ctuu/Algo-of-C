@@ -8,8 +8,6 @@ static Node *MakeNode(const Item *pi);
 static void swapNode(Node *pn_i, Node *pn_j);
 static void AddNode(Node *new_node, Node *head);
 static void DeleteAllNodes(Node *head);
-static Node *NodeGetPre(Node *pnode);
-static Node *NodeGetNext(Node *pnode);
 static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b));
 void InitializeList(List *plist)
 {
@@ -249,7 +247,7 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
     int a = i;
     int b = j - 1;
     Node *pn_a = pn_i;
-    Node *pn_b = NodeGetPre(pn_j);
+    Node *pn_b = GetNextNode(pn_j, 1);
     if (a < b)
     {
         while (a < b)
@@ -257,12 +255,12 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
             while (!(*cmp)(&pn_a->item, &pn_j->item) && a < b)
             {
                 a++;
-                pn_a = NodeGetNext(pn_a);
+                pn_a = GetNextNode(pn_a, 0);
             }
             while ((*cmp)(&pn_b->item, &pn_j->item) && a < b)
             {
                 b--;
-                pn_b = NodeGetPre(pn_b);
+                pn_b = GetNextNode(pn_b, 1);
             }
             if (!(*cmp)(&pn_j->item, &pn_a->item) && !(*cmp)(&pn_b->item, &pn_j->item))
             {
@@ -285,19 +283,30 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
     }
 }
 
-static Node *NodeGetPre(Node *pnode)
+Node *GetNextNode(Node *pnode, bool inorder)
 {
-    if (pnode == NULL)
-        return pnode;
+    if (inorder)
+    {
+        if (pnode == NULL)
+            return pnode;
+        else
+            return pnode->pre;
+    }
     else
-        return pnode->pre;
+    {
+        if (pnode == NULL)
+            return pnode;
+        else
+            return pnode->next;
+    }
 }
-static Node *NodeGetNext(Node *pnode)
+
+Node *GetHead(const List *plist, bool inorder)
 {
-    if (pnode == NULL)
-        return pnode;
+    if (inorder)
+        return plist->tail;
     else
-        return pnode->next;
+    return plist->head;
 }
 
 static void swapNode(Node *pn_i, Node *pn_j)
