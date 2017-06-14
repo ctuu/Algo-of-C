@@ -276,32 +276,8 @@ static Node *NodeGetNext(Node *pnode)
 
 static void swapNode(Node *pn_i, Node *pn_j, List *plist)
 {
-    Node temp;
-    temp.pre = pn_j->pre;
-    temp.next = pn_j->next;
-
-    pn_j->pre = pn_i->pre;
-    pn_j->next = pn_i->next;
-
-    if (pn_i->pre == NULL)
-        plist->head = pn_j;
-    else
-        pn_i->pre->next = pn_j;
-
-    if (pn_i->next == NULL)
-        plist->tail = pn_j;
-    else
-        pn_i->next->pre = pn_j;
-
-    pn_i->pre = temp.pre;
-    pn_i->next = temp.next;
-    if (temp.pre == NULL)
-        plist->head = pn_i;
-    else
-        temp.pre->next = pn_i;
-
-    if (temp.next == NULL)
-        plist->tail = pn_i;
-    else
-        temp.next->pre = pn_i;
+    Item temp;
+    temp = pn_i->item;
+    pn_i->item = pn_j->item;
+    pn_j->item = temp;
 }
