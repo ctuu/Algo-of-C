@@ -49,9 +49,9 @@ bool ListIsEmpty(const List *plist);
 bool ListIsFull(const List *plist);
 void EmptyTheList(List *plist);
 
-bool ListAddItem(Item *item, List *plist);
-bool ListDeleteItem(const Item *pi, List *plist);
-bool ListInsertItem(Item *item, Node *pnode, List *plist);
+bool ListAddItem(Item *item, List *plist, bool (*seek)(const Item *pi, const Item *pj));
+bool ListDeleteItem(const Item *pi, List *plist, bool (*seek)(const Item *pi, const Item *pj));
+bool ListInsertItem(Item *item, Node *pnode, List *plist, bool (*seek)(const Item *pi, const Item *pj));
 void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b));
 
 void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder);
@@ -64,30 +64,7 @@ bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item
 Node *GetNextNode(Node *pnode, bool inorder);
 Node *GetHead(const List *plist, bool inorder);
 
-bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi));
+bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi), bool (*seek)(const Item *pi, const Item *pj));
 bool ListSaveFile(FILE *fp, const List *plist, bool (*save)(FILE *fp, Item *pi));
 
-
-//get_data.c
-bool Get_Int(int *num);
-bool Get_ID(char *st);
-void uppercase(char *str);
-char *s_gets(char *st, int n);
-
-//stu_cmp.c
-bool Cmp_bID(const Item *pn_a, const Item *pn_b);
-bool Cmp_bName(const Item *pn_a, const Item *pn_b);
-bool Cmp_bCG(const Item *pn_a, const Item *pn_b);
-bool Cmp_bMG(const Item *pn_a, const Item *pn_b);
-bool Cmp_bEG(const Item *pn_a, const Item *pn_b);
-bool Cmp_bTG(const Item *pn_a, const Item *pn_b);
-bool Cmp_bRat(const Item *pn_a, const Item *pn_b);
-
-//stu_seek.c
-bool seek_bID(const Item *pi, const Item *pj);
-bool seek_bName(const Item *pi, const Item *pj);
-
-//stu_file.c
-bool Item_open(FILE *fp, Item *pi);
-bool Item_save(FILE *fp, Item *pi);
 #endif

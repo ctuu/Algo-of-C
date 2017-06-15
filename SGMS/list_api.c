@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "list.h"
+//#include "stu_func.h"
+
 static void CopyToNode(Item item, Node *pnode);
 static Node *MakeNode(const Item *pi);
 static void swapNode(Node *pn_i, Node *pn_j);
@@ -44,7 +46,7 @@ unsigned int ListItemCount(const List *plist)
     return plist->size;
 }
 
-bool ListAddItem(Item *pi, List *plist)
+bool ListAddItem(Item *pi, List *plist, bool (*seek)(const Item *pi, const Item *pj))
 {
     Node *new_node;
     if (ListIsFull(plist))
@@ -52,7 +54,7 @@ bool ListAddItem(Item *pi, List *plist)
         fprintf(stderr, "ERROR: List is full.\n");
         return false;
     }
-    if (ListSeekSet(pi, plist, seek_bID) != NULL)
+    if (ListSeekSet(pi, plist, (*seek)) != NULL)
     {
         fprintf(stderr, "ERROR: Attempted to add duplicate item.\n");
         return false;
@@ -106,10 +108,10 @@ bool InList(const Item *pi, const List *plist, bool (*seek)(const Item *pi, cons
     return (ListSeekSet(pi, plist, (*seek)) == NULL) ? false : true;
 }
 
-bool ListDeleteItem(const Item *pi, List *plist)
+bool ListDeleteItem(const Item *pi, List *plist, bool (*seek)(const Item *pi, const Item *pj))
 {
     Node *look = NULL;
-    look = ListSeekSet(pi, plist, seek_bID);
+    look = ListSeekSet(pi, plist, (*seek));
     if (look == NULL)
         return false;
     plist->size--;
@@ -202,7 +204,7 @@ bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item
     return isDT;
 }
 
-bool ListInsertItem(Item *pi, Node *pnode, List *plist)
+bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*seek)(const Item *pi, const Item *pj))
 {
     Node *new_node;
     if (ListIsFull(plist))
@@ -210,7 +212,7 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
         fprintf(stderr, "ERROR: List is full.\n");
         return false;
     }
-    if (ListSeekSet(pi, plist, seek_bID) != NULL)
+    if (ListSeekSet(pi, plist, (*seek)) != NULL)
     {
         fprintf(stderr, "ERROR: Attempted to add duplicate item.\n");
         return false;
@@ -221,7 +223,7 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist)
         fprintf(stderr, "ERROR: Couldn't create node.\n");
         return false;
     }
-    if (!InList(&pnode->item, plist, seek_bID))
+    if (!InList(&pnode->item, plist, (*seek)))
     {
         fprintf(stderr, "ERROR: Node is not exist.\n");
         return false;
@@ -318,11 +320,11 @@ static void swapNode(Node *pn_i, Node *pn_j)
     pn_j->item = temp;
 }
 
-bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi))
+bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi), bool (*seek)(const Item *pi, const Item *pj))
 {
     Item temp;
     while ((*open)(fp, &temp))
-        if (!ListAddItem(&temp, plist))
+        if (!ListAddItem(&temp, plist, (*seek)))
             return false;
     puts("File read complete.");
     printf("Read %d records.\n", plist->size);

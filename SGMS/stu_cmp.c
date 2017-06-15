@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "list.h"
+#include "stu_func.h"
+
 static bool Str_Cmp(const char *a, const char *b);
 
 bool Cmp_bID(const Item *pn_a, const Item *pn_b)

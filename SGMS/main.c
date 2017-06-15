@@ -3,6 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 #include "list.h"
+#include "stu_func.h"
+
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
@@ -37,12 +39,12 @@ int main(void)
 
     FILE *fp;
 
-    if ((fp = fopen("sgms.txt", "r")) == NULL)
+    if ((fp = fopen("sgms.csv", "r")) == NULL)
     {
         fprintf(stdout, "Can't open \"sgms\" file.\n");
         exit(EXIT_FAILURE);
     }
-    else if (ListOpenFile(fp, &stu, Item_open))
+    else if (ListOpenFile(fp, &stu, Item_open, seek_bID))
     {
         if (fclose(fp) != 0)
             fprintf(stderr, "Erroe closing file.\n");
@@ -141,7 +143,7 @@ bool Stu_Add(List *plist)
     {
         if (!Input_Item(&temp, plist))
             return false;
-        if (ListAddItem(&temp, plist))
+        if (ListAddItem(&temp, plist, seek_bID))
         {
             puts("Successful.");
             return true;
@@ -198,7 +200,7 @@ bool Stu_Delete(List *plist)
     puts("Please enter the ID of Student you wish to delete:");
     if (!Get_ID(temp.StuID))
         return false;
-    if (ListDeleteItem(&temp, plist))
+    if (ListDeleteItem(&temp, plist, seek_bID))
         printf("ID %s is dropped from the System.\n", temp.StuID);
     else
         printf("ERROR: Id %s is not a member.\n", temp.StuID);
@@ -487,7 +489,7 @@ bool Stu_insert(List *plist)
     printf("Data will be insert before ID %s.\n", temp.StuID);
     if (!Input_Item(&temp, plist))
         return false;
-    if (ListInsertItem(&temp, fnode, plist))
+    if (ListInsertItem(&temp, fnode, plist, seek_bID))
     {
         puts("Insert successful.");
         return true;
@@ -583,7 +585,7 @@ void Stat_GetMin(Grade *gcur, const Grade *head, bool inorder)
 void Stu_Saved(const List *plist)
 {
     FILE *fp;
-    if ((fp = fopen("sgms.txt", "w")) == NULL)
+    if ((fp = fopen("sgms.csv", "w")) == NULL)
     {
         fprintf(stdout, "Can't open \"sgms\" file.\n");
         exit(EXIT_FAILURE);

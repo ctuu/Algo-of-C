@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "list.h"
+#include "stu_func.h"
 
 bool Item_open(FILE *fp, Item *pi)
 {

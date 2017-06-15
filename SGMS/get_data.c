@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "list.h"
+#include "stu_func.h"
+
 static bool IsDigit(char *ch);
 static bool Get_NULL(char *str);
 void uppercase(char *str)
