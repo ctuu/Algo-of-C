@@ -23,6 +23,8 @@ bool seek_bID(const Item *pi, const Item *pj);
 bool seek_bName(const Item *pi, const Item *pj);
 
 //stu_file.c
+bool File_skip(FILE *fp);
+bool File_AddTitle(FILE *fp);
 bool Item_open(FILE *fp, Item *pi);
 bool Item_save(FILE *fp, Item *pi);
 

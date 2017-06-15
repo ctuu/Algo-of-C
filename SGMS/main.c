@@ -38,17 +38,18 @@ int main(void)
     InitializeList(&stu);
 
     FILE *fp;
-
     if ((fp = fopen("sgms.csv", "r")) == NULL)
     {
-        fprintf(stdout, "Can't open \"sgms\" file.\n");
-        exit(EXIT_FAILURE);
+        if ((fp = fopen("sgms.csv", "a")) == NULL)
+        {
+            fprintf(stdout, "Can't open \"sgms\" file.\n");
+            exit(EXIT_FAILURE);
+        }
     }
-    else if (ListOpenFile(fp, &stu, Item_open, seek_bID))
-    {
-        if (fclose(fp) != 0)
-            fprintf(stderr, "Erroe closing file.\n");
-    }
+    File_skip(fp);
+    ListOpenFile(fp, &stu, Item_open, seek_bID);
+    if (fclose(fp) != 0)
+        fprintf(stderr, "Erroe closing file.\n");
     char chooce;
     while ((chooce = Menu()) != '0')
     {
@@ -590,11 +591,10 @@ void Stu_Saved(const List *plist)
         fprintf(stdout, "Can't open \"sgms\" file.\n");
         exit(EXIT_FAILURE);
     }
-    if (ListSaveFile(fp, plist, Item_save))
-    {
-        if (fclose(fp) != 0)
-            fprintf(stderr, "Erroe closing file.\n");
-    }
+    File_AddTitle(fp);
+    ListSaveFile(fp, plist, Item_save);
+    if (fclose(fp) != 0)
+        fprintf(stderr, "Erroe closing file.\n");
 }
 
 void Stu_Exit(List *plist)

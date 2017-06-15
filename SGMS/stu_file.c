@@ -5,6 +5,19 @@
 #include "list.h"
 #include "stu_func.h"
 
+bool File_skip(FILE *fp)
+{
+    fscanf(fp, "%*[^\n]%*c%*[^\n]%*c");
+    return true;
+}
+
+bool File_AddTitle(FILE *fp)
+{
+    fprintf(fp, "The Students' Grade Management System,,,,,\n");
+    fprintf(fp, "ID,Name,C Language Grade,Math Grade,English Grade,Rating\n");
+    return true;
+}
+
 bool Item_open(FILE *fp, Item *pi)
 {
     if (fscanf(fp, "%[^,],%[^,],%d,%d,%d,%d\n", pi->StuID, pi->Name, &pi->grade.C_lang, &pi->grade.Math, &pi->grade.Eng, &pi->Rating) == 6)
