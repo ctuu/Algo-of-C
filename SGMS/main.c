@@ -374,8 +374,6 @@ char Modify_Menu(void)
     char ch[2];
     while (s_gets(ch, 2) != NULL && ch[0] != '\0')
     {
-        // while (getchar() != '\n')
-        //     continue;
         ch[0] = tolower(ch[0]);
         if (strchr("0123456", ch[0]) == NULL)
             puts("ERROR: Please enter 1 ~ 6 or 0:");
