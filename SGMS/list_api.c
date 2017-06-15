@@ -46,7 +46,7 @@ unsigned int ListItemCount(const List *plist)
     return plist->size;
 }
 
-bool ListAddItem(Item *pi, List *plist, bool (*seek)(const Item *pi, const Item *pj))
+bool ListAddItem(Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Node *new_node;
     if (ListIsFull(plist))
@@ -103,12 +103,12 @@ static void AddNode(Node *new_node, Node *head)
     new_node->pre = head;
 }
 
-bool InList(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj))
+bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
     return (ListSeekSet(pi, plist, (*seek)) == NULL) ? false : true;
 }
 
-bool ListDeleteItem(const Item *pi, List *plist, bool (*seek)(const Item *pi, const Item *pj))
+bool ListDeleteItem(const Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Node *look = NULL;
     look = ListSeekSet(pi, plist, (*seek));
@@ -175,7 +175,7 @@ static void DeleteAllNodes(Node *head)
     }
 }
 
-Node *ListSeekSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj))
+Node *ListSeekSet(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Node *look = plist->head;
     while (look != NULL)
@@ -204,7 +204,7 @@ bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item
     return isDT;
 }
 
-bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*seek)(const Item *pi, const Item *pj))
+bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Node *new_node;
     if (ListIsFull(plist))
@@ -241,6 +241,7 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*seek)(const Item 
     pnode->pre = new_node;
     return true;
 }
+
 void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b))
 {
     QuickSort(0, plist->size - 1, plist->head, plist->tail, plist, (*cmp));
@@ -320,7 +321,7 @@ static void swapNode(Node *pn_i, Node *pn_j)
     pn_j->item = temp;
 }
 
-bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi), bool (*seek)(const Item *pi, const Item *pj))
+bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi), bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Item temp;
     while ((*open)(fp, &temp))
