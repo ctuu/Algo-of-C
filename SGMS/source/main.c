@@ -38,7 +38,8 @@ int main(void)
     InitializeList(&stu);
 
     FILE *fp;
-    if ((fp = fopen("sgms.csv", "r")) == NULL)
+    char ch;
+    if ((fp = fopen("sgms.csv", "r")) == NULL || (ch = fgetc(fp)) == EOF)
     {
         if ((fp = fopen("sgms.csv", "a")) == NULL)
         {
@@ -46,8 +47,11 @@ int main(void)
             exit(EXIT_FAILURE);
         }
     }
-    File_skip(fp);
-    ListOpenFile(fp, &stu, Item_open, seek_bID);
+    else
+    {
+        File_skip(fp);
+        ListOpenFile(fp, &stu, Item_open, seek_bID);
+    }
     if (fclose(fp) != 0)
         fprintf(stderr, "Erroe closing file.\n");
     char chooce;

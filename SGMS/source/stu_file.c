@@ -28,7 +28,7 @@ bool Item_open(FILE *fp, Item *pi)
     }
     else
     {
-        fprintf(stderr, "ERROR: Data can not be read.\n");
+        fprintf(stderr, "ERROR: Data can not be read666.\n");
         return false;
     }
 }

@@ -3,7 +3,7 @@
 #define STU_FUNC_H_
 #include <stdbool.h>
 
-//get_data.c
+//stu_get_data.c
 bool Get_Int(int *num);
 bool Get_ID(char *st);
 void uppercase(char *str);

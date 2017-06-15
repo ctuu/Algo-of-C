@@ -1,5 +1,6 @@
 # foloder
 .vscode
+build
 
 # Prerequisites
 *.d
