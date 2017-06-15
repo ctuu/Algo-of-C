@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "list.h"
+#include "stu_item.h"
 #include "stu_func.h"
 
 bool File_skip(FILE *fp)
@@ -20,6 +20,9 @@ bool File_AddTitle(FILE *fp)
 
 bool Item_open(FILE *fp, Item *pi)
 {
+    char ch;
+    if (feof(fp))
+        return false;
     if (fscanf(fp, "%[^,],%[^,],%d,%d,%d,%d\n", pi->StuID, pi->Name, &pi->grade.C_lang, &pi->grade.Math, &pi->grade.Eng, &pi->Rating) == 6)
     {
         pi->grade.Total = pi->grade.C_lang + pi->grade.Math + pi->grade.Eng;
@@ -28,7 +31,7 @@ bool Item_open(FILE *fp, Item *pi)
     }
     else
     {
-        fprintf(stderr, "ERROR: Data can not be read666.\n");
+        fprintf(stderr, "ERROR: Data can not be read.\n");
         return false;
     }
 }

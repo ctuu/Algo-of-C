@@ -599,6 +599,7 @@ void Stu_Saved(const List *plist)
     ListSaveFile(fp, plist, Item_save);
     if (fclose(fp) != 0)
         fprintf(stderr, "Erroe closing file.\n");
+    unsaved = 0;
 }
 
 void Stu_Exit(List *plist)
