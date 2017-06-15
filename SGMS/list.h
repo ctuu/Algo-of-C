@@ -47,20 +47,22 @@ typedef struct list
 void InitializeList(List *plist);
 bool ListIsEmpty(const List *plist);
 bool ListIsFull(const List *plist);
+unsigned int ListItemCount(const List *plist);
+
 void EmptyTheList(List *plist);
 
 bool ListAddItem(Item *item, List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
 bool ListDeleteItem(const Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
 bool ListInsertItem(Item *item, Node *pnode, List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
-void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b));
 
 void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder);
-bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
-unsigned int ListItemCount(const List *plist);
 
+bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
 Node *ListSeekSet(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
 bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj), void(*pfun)(Item item));
 
+
+void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b));
 Node *GetNextNode(Node *pnode, bool inorder);
 Node *GetHead(const List *plist, bool inorder);
 

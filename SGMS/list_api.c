@@ -3,13 +3,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include "list.h"
-//#include "stu_func.h"
 
-static void CopyToNode(Item item, Node *pnode);
 static Node *MakeNode(const Item *pi);
-static void swapNode(Node *pn_i, Node *pn_j);
+static void CopyToNode(Item item, Node *pnode);
 static void AddNode(Node *new_node, Node *head);
+
 static void DeleteAllNodes(Node *head);
+
+static void swapNode(Node *pn_i, Node *pn_j);
 static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b));
 
 void InitializeList(List *plist)
@@ -18,6 +19,7 @@ void InitializeList(List *plist)
     plist->tail = NULL;
     plist->size = 0;
 }
+
 bool ListIsEmpty(const List *plist)
 {
     if (plist->head == NULL)
@@ -45,6 +47,31 @@ unsigned int ListItemCount(const List *plist)
 {
     return plist->size;
 }
+//module
+
+
+void EmptyTheList(List *plist)
+{
+    if (plist != NULL)
+        DeleteAllNodes(plist->head);
+    plist->head = NULL;
+    plist->tail = NULL;
+    plist->size = 0;
+}
+
+static void DeleteAllNodes(Node *head)
+{
+    Node *psave;
+    while (head != NULL)
+    {
+        psave = head->next;
+        free(head);
+        head = psave;
+    }
+}
+
+//module
+
 
 bool ListAddItem(Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
@@ -103,10 +130,8 @@ static void AddNode(Node *new_node, Node *head)
     new_node->pre = head;
 }
 
-bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
-{
-    return (ListSeekSet(pi, plist, (*seek)) == NULL) ? false : true;
-}
+//module
+
 
 bool ListDeleteItem(const Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
@@ -139,70 +164,8 @@ bool ListDeleteItem(const Item *pi, List *plist, bool (*u_seek)(const Item *pi, 
     return true;
 }
 
-void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder)
-{
-    Node *pnode;
-    if (!inorder)
-        pnode = plist->head;
-    else
-        pnode = plist->tail;
-    while (pnode != NULL)
-    {
-        (*pfun)(pnode->item);
-        if (!inorder)
-            pnode = pnode->next;
-        else
-            pnode = pnode->pre;
-    }
-}
+//module
 
-void EmptyTheList(List *plist)
-{
-    if (plist != NULL)
-        DeleteAllNodes(plist->head);
-    plist->head = NULL;
-    plist->tail = NULL;
-    plist->size = 0;
-}
-static void DeleteAllNodes(Node *head)
-{
-    Node *psave;
-    while (head != NULL)
-    {
-        psave = head->next;
-        free(head);
-        head = psave;
-    }
-}
-
-Node *ListSeekSet(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
-{
-    Node *look = plist->head;
-    while (look != NULL)
-    {
-        if (!(*seek)(pi, &look->item))
-            look = look->next;
-        else
-            break;
-    }
-    return look;
-}
-
-bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj), void (*pfun)(Item item))
-{
-    bool isDT = 0;
-    Node *look = plist->head;
-    while (look != NULL)
-    {
-        if ((*seek)(pi, &look->item))
-        {
-            isDT = 1;
-            (*pfun)(look->item);
-        }
-        look = look->next;
-    }
-    return isDT;
-}
 
 bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
@@ -242,10 +205,71 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*u_seek)(const Ite
     return true;
 }
 
+//module
+
+
+void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder)
+{
+    Node *pnode;
+    if (!inorder)
+        pnode = plist->head;
+    else
+        pnode = plist->tail;
+    while (pnode != NULL)
+    {
+        (*pfun)(pnode->item);
+        if (!inorder)
+            pnode = pnode->next;
+        else
+            pnode = pnode->pre;
+    }
+}
+
+//module
+
+
+Node *ListSeekSet(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
+{
+    Node *look = plist->head;
+    while (look != NULL)
+    {
+        if (!(*seek)(pi, &look->item))
+            look = look->next;
+        else
+            break;
+    }
+    return look;
+}
+
+bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj), void (*pfun)(Item item))
+{
+    bool isDT = 0;
+    Node *look = plist->head;
+    while (look != NULL)
+    {
+        if ((*seek)(pi, &look->item))
+        {
+            isDT = 1;
+            (*pfun)(look->item);
+        }
+        look = look->next;
+    }
+    return isDT;
+}
+
+bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
+{
+    return (ListSeekSet(pi, plist, (*seek)) == NULL) ? false : true;
+}
+
+//module
+
+
 void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b))
 {
     QuickSort(0, plist->size - 1, plist->head, plist->tail, plist, (*cmp));
 }
+
 static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b))
 {
     int a = i;
@@ -321,6 +345,9 @@ static void swapNode(Node *pn_i, Node *pn_j)
     pn_j->item = temp;
 }
 
+//module
+
+
 bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi), bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Item temp;
@@ -343,3 +370,5 @@ bool ListSaveFile(FILE *fp,const List *plist, bool (*save)(FILE *fp, Item *pi))
     puts("File saved.");
     return true;
 }
+
+//module
