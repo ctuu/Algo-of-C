@@ -4,11 +4,12 @@
 #include <stdlib.h>
 #include "list.h"
 
+static void DeleteAllNodes(Node *head);
+
 static Node *MakeNode(const Item *pi);
 static void CopyToNode(Item item, Node *pnode);
 static void AddNode(Node *new_node, Node *head);
 
-static void DeleteAllNodes(Node *head);
 
 static void swapNode(Node *pn_i, Node *pn_j);
 static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b));
@@ -270,6 +271,40 @@ void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b))
     QuickSort(0, plist->size - 1, plist->head, plist->tail, plist, (*cmp));
 }
 
+Node *GetNextNode(Node *pnode, bool inorder)
+{
+    if (inorder)
+    {
+        if (pnode == NULL)
+            return pnode;
+        else
+            return pnode->pre;
+    }
+    else
+    {
+        if (pnode == NULL)
+            return pnode;
+        else
+            return pnode->next;
+    }
+}
+
+Node *GetHead(const List *plist, bool inorder)
+{
+    if (inorder)
+        return plist->tail;
+    else
+    return plist->head;
+}
+
+static void swapNode(Node *pn_i, Node *pn_j)
+{
+    Item temp;
+    temp = pn_i->item;
+    pn_i->item = pn_j->item;
+    pn_j->item = temp;
+}
+
 static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b))
 {
     int a = i;
@@ -309,40 +344,6 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
             swapNode(pn_i, pn_j);
         }
     }
-}
-
-Node *GetNextNode(Node *pnode, bool inorder)
-{
-    if (inorder)
-    {
-        if (pnode == NULL)
-            return pnode;
-        else
-            return pnode->pre;
-    }
-    else
-    {
-        if (pnode == NULL)
-            return pnode;
-        else
-            return pnode->next;
-    }
-}
-
-Node *GetHead(const List *plist, bool inorder)
-{
-    if (inorder)
-        return plist->tail;
-    else
-    return plist->head;
-}
-
-static void swapNode(Node *pn_i, Node *pn_j)
-{
-    Item temp;
-    temp = pn_i->item;
-    pn_i->item = pn_j->item;
-    pn_j->item = temp;
 }
 
 //module

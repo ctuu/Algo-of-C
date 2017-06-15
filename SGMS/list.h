@@ -57,9 +57,9 @@ bool ListInsertItem(Item *item, Node *pnode, List *plist, bool (*u_seek)(const I
 
 void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder);
 
-bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
 Node *ListSeekSet(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
 bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item *pi, const Item *pj), void(*pfun)(Item item));
+bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj));
 
 
 void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b));
