@@ -82,7 +82,7 @@ bool ListAddItem(Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Ite
         fprintf(stderr, "ERROR: List is full.\n");
         return false;
     }
-    if (ListSeekSet(pi, plist, (*seek)) != NULL)
+    if (ListSeekSet(pi, plist, (*u_seek)) != NULL)
     {
         fprintf(stderr, "ERROR: Attempted to add duplicate item.\n");
         return false;
@@ -137,7 +137,7 @@ static void AddNode(Node *new_node, Node *head)
 bool ListDeleteItem(const Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Node *look = NULL;
-    look = ListSeekSet(pi, plist, (*seek));
+    look = ListSeekSet(pi, plist, (*u_seek));
     if (look == NULL)
         return false;
     plist->size--;
@@ -176,7 +176,7 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*u_seek)(const Ite
         fprintf(stderr, "ERROR: List is full.\n");
         return false;
     }
-    if (ListSeekSet(pi, plist, (*seek)) != NULL)
+    if (ListSeekSet(pi, plist, (*u_seek)) != NULL)
     {
         fprintf(stderr, "ERROR: Attempted to add duplicate item.\n");
         return false;
@@ -187,7 +187,7 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*u_seek)(const Ite
         fprintf(stderr, "ERROR: Couldn't create node.\n");
         return false;
     }
-    if (!InList(&pnode->item, plist, (*seek)))
+    if (!InList(&pnode->item, plist, (*u_seek)))
     {
         fprintf(stderr, "ERROR: Node is not exist.\n");
         return false;
@@ -234,7 +234,7 @@ Node *ListSeekSet(const Item *pi, const List *plist, bool (*u_seek)(const Item *
     Node *look = plist->head;
     while (look != NULL)
     {
-        if (!(*seek)(pi, &look->item))
+        if (!(*u_seek)(pi, &look->item))
             look = look->next;
         else
             break;
@@ -260,7 +260,7 @@ bool ListSeekMultiSet(const Item *pi, const List *plist, bool (*seek)(const Item
 
 bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
-    return (ListSeekSet(pi, plist, (*seek)) == NULL) ? false : true;
+    return (ListSeekSet(pi, plist, (*u_seek)) == NULL) ? false : true;
 }
 
 //module
@@ -353,7 +353,7 @@ bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi), bool 
 {
     Item temp;
     while ((*open)(fp, &temp))
-        if (!ListAddItem(&temp, plist, (*seek)))
+        if (!ListAddItem(&temp, plist, (*u_seek)))
             return false;
     puts("File read complete.");
     printf("Read %d records.\n", plist->size);
