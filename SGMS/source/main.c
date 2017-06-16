@@ -16,6 +16,7 @@ bool Stu_Sort(List *plist);
 bool Stu_insert(List *plist);
 bool Stu_Display(const List *plist);
 void Stu_Statistic(const List *plist);
+void Stu_Open(List *plist);
 void Stu_Saved(const List *plist);
 void Stu_Exit(List *plist);
 bool Input_Item(Item *item, List *plist);
@@ -36,24 +37,8 @@ int main(void)
 {
     List stu;
     InitializeList(&stu);
-
-    FILE *fp;
-    char ch;
-    if ((fp = fopen("sgms.csv", "r")) == NULL || (ch = fgetc(fp)) == EOF)
-    {
-        if ((fp = fopen("sgms.csv", "a")) == NULL)
-        {
-            fprintf(stdout, "Can't open \"sgms\" file.\n");
-            exit(EXIT_FAILURE);
-        }
-    }
-    else
-    {
-        File_skip(fp);
-        ListOpenFile(fp, &stu, Item_open, seek_bID);
-    }
-    if (fclose(fp) != 0)
-        fprintf(stderr, "Erroe closing file.\n");
+    Stu_Open(&stu);
+    
     char chooce;
     while ((chooce = Menu()) != '0')
     {
@@ -472,13 +457,14 @@ char Sort_Menu(void)
 
 bool Stu_insert(List *plist)
 {
-    if (!Stu_Display(plist))
-        return false;
     if (ListIsFull(plist))
     {
         puts("ERROR: No space in the program!");
         return false;
     }
+    
+    if (!Stu_Display(plist))
+        return false;
 
     Item temp;
     Node *fnode;
@@ -585,6 +571,29 @@ void Stat_GetMin(Grade *gcur, const Grade *head, bool inorder)
         gcur->Math = MIN(gcur->Math, head->Math);
         gcur->Eng = MIN(gcur->Eng, head->Eng);
     }
+}
+
+void Stu_Open(List *plist)
+{
+    FILE *fp;
+    char ch;
+    if ((fp = fopen("sgms.csv", "r")) == NULL)
+    {
+        if ((fp = fopen("sgms.csv", "a")) == NULL)
+        {
+            fprintf(stdout, "Can't open \"sgms\" file.\n");
+            exit(EXIT_FAILURE);
+        }
+        File_AddTitle(fp);
+    }
+    else
+    {
+        File_skip(fp);
+        if (!feof(fp))
+            ListOpenFile(fp, plist, Item_open, seek_bID);
+    }
+    if (fclose(fp) != 0)
+        fprintf(stderr, "Erroe closing file.\n");
 }
 
 void Stu_Saved(const List *plist)
