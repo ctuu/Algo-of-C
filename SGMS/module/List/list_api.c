@@ -8,7 +8,7 @@ static void DeleteAllNodes(Node *head);
 
 static Node *MakeNode(const Item *pi);
 static void CopyToNode(Item item, Node *pnode);
-static void AddNode(Node *new_node, Node *head);
+static void AddNode(Node *new_node, Node *tail);
 
 
 static void swapNode(Node *pn_i, Node *pn_j);
@@ -98,7 +98,7 @@ bool ListAddItem(Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Ite
     if (plist->head == NULL)
         plist->head = new_node;
     else
-        AddNode(new_node, plist->head);
+        AddNode(new_node, plist->tail);
     plist->tail = new_node;
     return true;
 }
@@ -122,13 +122,10 @@ static void CopyToNode(Item item, Node *pnode)
     pnode->item = item;
 }
 
-static void AddNode(Node *new_node, Node *head)
+static void AddNode(Node *new_node, Node *tail)
 {
-    while (head->next != NULL)
-        head = head->next;
-
-    head->next = new_node;
-    new_node->pre = head;
+    tail->next = new_node;
+    new_node->pre = tail;
 }
 
 //module

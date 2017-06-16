@@ -10,7 +10,6 @@ typedef struct node
     struct node * pre;
     struct node * next;
 } Node;
-//typedef Node * List;
 
 typedef struct list
 {
