@@ -6,5 +6,6 @@ cd ..
 rd /S /Q build
 md build
 cd bin
+pause
 cls
 main.exe
