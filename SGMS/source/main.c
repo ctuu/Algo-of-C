@@ -161,7 +161,7 @@ bool Input_Item(Item *item, List *plist)
         puts("Operation canceled");
         return false;
     }
-    uppercase(item->Name);
+
     puts("Please enter Student's C language grade:");
     if (!Get_Int(&item->grade.C_lang))
         return false;
@@ -231,7 +231,7 @@ void Stu_Search(const List *plist)
                 puts("Operation canceled");
                 return false;
             }
-            uppercase(temp.Name);
+            
             if (!InList(&temp, plist, seek_bName))
                 printf("ERROR: Name %s is not a member.\n", temp.Name);
             else
@@ -316,7 +316,7 @@ bool Stu_Modify(List *plist)
                 puts("Operation canceled");
                 break;
             }
-            uppercase(fnode->item.Name);
+            
             isMod = 1;
             break;
         case '3':
