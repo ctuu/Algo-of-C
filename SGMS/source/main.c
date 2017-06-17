@@ -513,6 +513,7 @@ void Item_Display(const Item item)
     printf("  %6s%4d%6s  %3s%4d%3s  %4s%4d%5s  %3s%5d%3s  %3s%6.2f%4s", " ", item.grade.C_lang, " ", " ", item.grade.Math, " ", " ", item.grade.Eng, " ", " ", item.grade.Total, " ", " ", item.grade.Ave, " ");
     printf("  %4d\n", item.Rating);
 }
+
 void Stu_Statistic(const List *plist)
 {
     if (ListIsEmpty(plist))
