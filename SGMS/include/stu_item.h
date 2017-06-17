@@ -3,7 +3,7 @@
 
 #define LEN_ID 10
 #define LEN_NAME 15
-#define LEN_NUM 4
+#define LEN_NUM 5
 
 #define C_PASSED 60
 #define MATH_PASSED 60

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "list.h"
+#include "stu_item.h"
 #include "stu_func.h"
 
 static bool IsDigit(char *ch);

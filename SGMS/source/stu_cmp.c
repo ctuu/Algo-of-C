@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "list.h"
+#include "stu_item.h"
 #include "stu_func.h"
 
 static bool Str_Cmp(const char *a, const char *b);
