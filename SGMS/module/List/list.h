@@ -22,6 +22,7 @@ typedef struct list
 void InitializeList(List *plist);
 bool ListIsEmpty(const List *plist);
 bool ListIsFull(const List *plist);
+int ListStatus(const List *plist);
 unsigned int ListItemCount(const List *plist);
 
 void EmptyTheList(List *plist);

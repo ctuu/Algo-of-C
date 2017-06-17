@@ -39,7 +39,7 @@ int main(void)
     List stu;
     InitializeList(&stu);
     Stu_Open(&stu);
-    
+
     char chooce;
     while ((chooce = Menu()) != '0')
     {
@@ -128,20 +128,18 @@ bool Stu_Add(List *plist)
 {
     Item temp;
 
-    if (ListIsFull(plist))
-        puts("ERROR: No space in the program!");
-    else
+    if (ListStatus(plist) == 2)
+        return false;
+
+    if (!Input_Item(&temp, plist))
+        return false;
+    if (ListAddItem(&temp, plist, seek_bID))
     {
-        if (!Input_Item(&temp, plist))
-            return false;
-        if (ListAddItem(&temp, plist, seek_bID))
-        {
-            puts("Successful.");
-            return true;
-        }
-        else
-            puts("ERROR: Fail to add record.");
+        puts("Successful.");
+        return true;
     }
+    else
+        puts("ERROR: Fail to add record.");
     return false;
 }
 
@@ -182,11 +180,8 @@ bool Input_Item(Item *item, List *plist)
 bool Stu_Delete(List *plist)
 {
     Item temp;
-    if (ListIsEmpty(plist))
-    {
-        puts("ERROR: No entries!");
+    if (ListStatus(plist))
         return false;
-    }
     Stu_Display(plist);
     puts("Please enter the ID of Student you wish to delete:");
     if (!Get_ID(temp.StuID))
@@ -201,11 +196,8 @@ bool Stu_Delete(List *plist)
 void Stu_Search(const List *plist)
 {
     Item temp;
-    if (ListIsEmpty(plist))
-    {
-        puts("ERROR: No entries!");
-        return;
-    }
+    if (ListStatus(plist))
+        return false;
     char chooce;
     Node *found = NULL;
     while ((chooce = Search_Menu()) != '0')
@@ -231,7 +223,7 @@ void Stu_Search(const List *plist)
                 puts("Operation canceled");
                 return false;
             }
-            
+
             if (!InList(&temp, plist, seek_bName))
                 printf("ERROR: Name %s is not a member.\n", temp.Name);
             else
@@ -272,11 +264,8 @@ char Search_Menu(void)
 bool Stu_Modify(List *plist)
 {
     bool isMod = 0;
-    if (ListIsEmpty(plist))
-    {
-        puts("ERROR: No entries!");
+    if (ListStatus(plist))
         return false;
-    }
     Stu_Display(plist);
 
     Item temp;
@@ -316,7 +305,7 @@ bool Stu_Modify(List *plist)
                 puts("Operation canceled");
                 break;
             }
-            
+
             isMod = 1;
             break;
         case '3':
@@ -384,11 +373,8 @@ char Modify_Menu(void)
 bool Stu_Sort(List *plist)
 {
     bool isSort = 0;
-    if (ListIsEmpty(plist))
-    {
-        puts("ERROR: No entries!");
+    if (ListStatus(plist))
         return false;
-    }
     Stu_Display(plist);
     char chooce;
     while ((chooce = Sort_Menu()) != '0')
@@ -458,12 +444,9 @@ char Sort_Menu(void)
 
 bool Stu_insert(List *plist)
 {
-    if (ListIsFull(plist))
-    {
-        puts("ERROR: No space in the program!");
+    if (ListStatus(plist))
         return false;
-    }
-    
+
     if (!Stu_Display(plist))
         return false;
 
@@ -493,11 +476,8 @@ bool Stu_insert(List *plist)
 
 bool Stu_Display(const List *plist)
 {
-    if (ListIsEmpty(plist))
-    {
-        puts("ERROR: No entries!");
+    if (ListStatus(plist))
         return false;
-    }
     Title_Display();
     ListTraverse(plist, Item_Display, 0);
     return true;
@@ -516,34 +496,31 @@ void Item_Display(const Item item)
 
 void Stu_Statistic(const List *plist)
 {
-    if (ListIsEmpty(plist))
-        puts("ERROR: No entries!");
-    else
+    if (ListStatus(plist))
+        return;
+    Node *head = GetHead(plist, 0);
+    Grade g_min = head->item.grade;
+    Grade g_max = g_min;
+    Grade g_tot = {0, 0, 0, 0, 0};
+    Grade g_failed = {0, 0, 0, 0, 0};
+    while (head != NULL)
     {
-        Node *head = GetHead(plist, 0);
-        Grade g_min = head->item.grade;
-        Grade g_max = g_min;
-        Grade g_tot = {0, 0, 0, 0, 0};
-        Grade g_failed = {0, 0, 0, 0, 0};
-        while (head != NULL)
-        {
-            Stat_GetMin(&g_min, &head->item.grade, 0);
-            Stat_GetMin(&g_max, &head->item.grade, 1);
+        Stat_GetMin(&g_min, &head->item.grade, 0);
+        Stat_GetMin(&g_max, &head->item.grade, 1);
 
-            g_tot.C_lang += head->item.grade.C_lang;
-            g_tot.Math += head->item.grade.Math;
-            g_tot.Eng += head->item.grade.Eng;
-            g_tot.Total += head->item.grade.Total;
+        g_tot.C_lang += head->item.grade.C_lang;
+        g_tot.Math += head->item.grade.Math;
+        g_tot.Eng += head->item.grade.Eng;
+        g_tot.Total += head->item.grade.Total;
 
-            g_failed.C_lang += (head->item.grade.C_lang < C_PASSED);
-            g_failed.Math += (head->item.grade.Math < MATH_PASSED);
-            g_failed.Eng += (head->item.grade.Eng < ENG_PASSED);
-            head = GetNextNode(head, 0);
-        }
-        Stat_Title();
-        Stat_Display(&g_min, &g_max, &g_tot, &g_failed, plist);
-        printf("\nTotal Size: %d\n", plist->size);
+        g_failed.C_lang += (head->item.grade.C_lang < C_PASSED);
+        g_failed.Math += (head->item.grade.Math < MATH_PASSED);
+        g_failed.Eng += (head->item.grade.Eng < ENG_PASSED);
+        head = GetNextNode(head, 0);
     }
+    Stat_Title();
+    Stat_Display(&g_min, &g_max, &g_tot, &g_failed, plist);
+    printf("\nTotal Size: %d\n", plist->size);
 }
 void Stat_Title(void)
 {
@@ -586,13 +563,15 @@ void Stu_Open(List *plist)
             fprintf(stdout, "Can't open \"sgms\" file.\n");
             exit(EXIT_FAILURE);
         }
-        File_AddTitle(fp);
+        //File_AddTitle(fp);
     }
     else
     {
-        File_skip(fp);
         if (!feof(fp))
+        {
+            File_skip(fp);
             ListOpenFile(fp, plist, Item_open, seek_bID);
+        }
     }
     if (fclose(fp) != 0)
         fprintf(stderr, "Erroe closing file.\n");

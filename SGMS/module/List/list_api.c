@@ -10,7 +10,6 @@ static Node *MakeNode(const Item *pi);
 static void CopyToNode(Item item, Node *pnode);
 static void AddNode(Node *new_node, Node *tail);
 
-
 static void swapNode(Node *pn_i, Node *pn_j);
 static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*cmp)(const Item *a, const Item *b));
 
@@ -44,12 +43,26 @@ bool ListIsFull(const List *plist)
     return full;
 }
 
+int ListStatus(const List *plist)
+{
+    if (ListIsEmpty(plist))
+    {
+        fprintf(stderr, "ERROR: No entries!\n");
+        return 1;
+    }
+    if (ListIsFull(plist))
+    {
+        fprintf(stderr, "ERROR: No space in the program!\n");
+        return 2;
+    }
+    return 0;
+}
+
 unsigned int ListItemCount(const List *plist)
 {
     return plist->size;
 }
 //module
-
 
 void EmptyTheList(List *plist)
 {
@@ -72,7 +85,6 @@ static void DeleteAllNodes(Node *head)
 }
 
 //module
-
 
 bool ListAddItem(Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
@@ -130,7 +142,6 @@ static void AddNode(Node *new_node, Node *tail)
 
 //module
 
-
 bool ListDeleteItem(const Item *pi, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Node *look = NULL;
@@ -163,7 +174,6 @@ bool ListDeleteItem(const Item *pi, List *plist, bool (*u_seek)(const Item *pi, 
 }
 
 //module
-
 
 bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
@@ -205,7 +215,6 @@ bool ListInsertItem(Item *pi, Node *pnode, List *plist, bool (*u_seek)(const Ite
 
 //module
 
-
 void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder)
 {
     Node *pnode;
@@ -224,7 +233,6 @@ void ListTraverse(const List *plist, void (*pfun)(Item item), bool inorder)
 }
 
 //module
-
 
 Node *ListSeekSet(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, const Item *pj))
 {
@@ -262,7 +270,6 @@ bool InList(const Item *pi, const List *plist, bool (*u_seek)(const Item *pi, co
 
 //module
 
-
 void ListSort(List *plist, bool (*cmp)(const Item *a, const Item *b))
 {
     QuickSort(0, plist->size - 1, plist->head, plist->tail, plist, (*cmp));
@@ -291,7 +298,7 @@ Node *GetHead(const List *plist, bool inorder)
     if (inorder)
         return plist->tail;
     else
-    return plist->head;
+        return plist->head;
 }
 
 static void swapNode(Node *pn_i, Node *pn_j)
@@ -345,7 +352,6 @@ static void QuickSort(int i, int j, Node *pn_i, Node *pn_j, List *plist, bool (*
 
 //module
 
-
 bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi), bool (*u_seek)(const Item *pi, const Item *pj))
 {
     Item temp;
@@ -357,7 +363,7 @@ bool ListOpenFile(FILE *fp, List *plist, bool (*open)(FILE *fp, Item *pi), bool 
     return true;
 }
 
-bool ListSaveFile(FILE *fp,const List *plist, bool (*save)(FILE *fp, Item *pi))
+bool ListSaveFile(FILE *fp, const List *plist, bool (*save)(FILE *fp, Item *pi))
 {
     Node *head = GetHead(plist, 0);
     while (head != NULL)
