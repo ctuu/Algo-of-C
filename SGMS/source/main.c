@@ -128,7 +128,7 @@ bool Stu_Add(List *plist)
 {
     Item temp;
 
-    if (ListStatus(plist) == 2)
+    if (ListIsFull(plist))
         return false;
 
     if (!Input_Item(&temp, plist))
